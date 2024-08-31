@@ -1,10 +1,19 @@
-const express = require("express");
+const connectToMongo = require("./db"); // initializing db file
+const express = require("express"); // Initializing
+require("dotenv").config();
+
+connectToMongo(); //! Running db server
+
 const app = express();
-const port = 3000;
-app.get("/", (req, res) => {
-  res.send("hello world");
-});
+const port = process.env.PORT || 5000;
+
+// parsing body
+app.use(express.json());
+
+// Available Routes
+app.use("/api/auth", require("./routes/auth"));
+app.use("/api/command", require("./routes/command"));
 
 app.listen(port, () => {
-  console.log("Example app listening on port ${port}");
+  console.log(`CSTR now live on port ${port}`);
 });
