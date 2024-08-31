@@ -77,9 +77,6 @@ router.post(
     body("password", "Password cannot be blank").exists(),
   ],
   async (req, res) => {
-    let success = false;
-    let userExists;
-    let passwordMatch;
     // If there are errors, return Bad request and the errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -91,25 +88,17 @@ router.post(
     try {
       let user = await User.findOne({ email });
       if (!user) {
-        success = false;
-        userExists = false;
         return res.status(404).json({
-          success,
-          userExists,
+          success: false,
           error: "Email not found",
         });
       }
 
       const passwordCompare = await bcrypt.compare(password, user.password);
       if (!passwordCompare) {
-        success = false;
-        userExists = true;
-        passwordMatch = false;
         return res.status(400).json({
-          success,
-          passwordMatch,
-          userExists,
-          error: "Please try to login with correct password",
+          success: false,
+          error: "Invalid password",
         });
       }
 
@@ -122,10 +111,6 @@ router.post(
       res.json({
         success: true,
         authtoken,
-        passwordMatch: true,
-        userExists: true,
-        email: req.body.email,
-        firstName: user.firstName,
       });
     } catch (error) {
       console.error(error.message);
@@ -144,7 +129,6 @@ router.get("/getuser", fetchuser, async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
-module.exports = router;
 
 router.get("/authenticate", async (req, res) => {
   const token = req.query.token;
@@ -153,9 +137,12 @@ router.get("/authenticate", async (req, res) => {
   }
   try {
     const data = jwt.verify(token, JWT_SECRET);
+    // console.log(data);
     res.status(200).send(data);
   } catch (error) {
     console.log(error);
     res.status(401).send("Error: Something went wrong");
   }
 });
+
+module.exports = router;

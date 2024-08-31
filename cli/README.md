@@ -17,7 +17,7 @@ A simple C program to manage and retrieve shell commands with additional feature
 
 ## Compilation
 
-- Compile the project with: `gcc -Iinclude -Wall -o bin/cstr src/main.c src/commands.c src/utils.c -l curl`
+- Compile the project with: `gcc -Iinclude -Wall -o bin/cstr src/main.c src/commands.c src/auth.c -l curl -ljson-c`
 
 ## License
 
