@@ -14,6 +14,10 @@ const CommandSchema = new Schema(
     exitStatus: { type: Number, default: 0 },
     source: { type: String },
     aliases: [{ type: String }],
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
   { timestamps: true }
 );
