@@ -1,13 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <title>CSTR</title>
-  </head>
-  <body>
-    hello world
-  </body>
-  <script src="./script.js"></script>
+</head>
+
+<body class="h-screen w-screen overflow-hidden">
+    <div id="background_blurry_design_1" class="absolute -right-40"></div>
+    <div id="background_blurry_design_2" class="absolute -left-56 -bottom-32"></div>
+    <div class="h-full bg-[#151414] p-6 overflow-scroll flex flex-col gap-8">
+        <nav class="w-full flex gap-16 text-white items-center justify-between">
+            <div class="text-xl">Cstr</div>
+            <div class="w-2/5">
+                <div class="bg-[#23423c] flex rounded-full gap-4 items-center px-4 py-2 backdrop-blur-3xl">
+                    <i class="fa-solid fa-magnifying-glass text-sm"></i>
+                    <input type="text" class="bg-transparent border-none outline-none w-full"
+                        placeholder="Search payment" />
+                </div>
+            </div>
+            <div class="flex items-center justify-between gap-3">
+                <div class="text-xl">Hi Sahil!</div>
+                <div class="bg-white rounded-full h-6 w-6"></div>
+            </div>
+        </nav>
+        <main class="h-full w-full">
+            <!-- <section id="main_section" class="flex flex-row w-full gap-4 h-full">
+                <div class="flex flex-col justify-between items-center">
+                    <div class="flex flex-col gap-4">
+                        <div class="bg-[#23423c] rounded-full w-fit transition">
+                            <div
+                                class="rounded-full flex items-center justify-center h-10 w-10 hover:bg-white group/home duration-150 cursor-pointer">
+                                <i
+                                    class="fa-solid fa-house text-white group-hover/home:text-[#087452] duration-150"></i>
+                            </div>
+                            <div
+                                class="rounded-full flex items-center justify-center h-10 w-10 hover:bg-white group/plus duration-150 cursor-pointer">
+                                <i class="fa-solid fa-plus text-white group-hover/plus:text-[#087452] duration-150"></i>
+                            </div>
+                        </div>
+                        <div class="bg-[#23423c] rounded-full w-fit ">
+                            <div
+                                class="rounded-full flex items-center justify-center h-10 w-10 hover:bg-white group/plus duration-150 cursor-pointer">
+                                <i class="fa-solid fa-plus text-white group-hover/plus:text-[#087452] duration-150"></i>
+                            </div>
+                            <div
+                                class="rounded-full flex items-center justify-center h-10 w-10 hover:bg-white group/gear duration-150 cursor-pointer">
+                                <i class="fa-solid fa-gear text-white group-hover/gear:text-[#087452] duration-150"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="">
+                        <i
+                            class="fa-solid fa-arrow-right-from-bracket bg-[#23423c] text-white rounded-full flex items-center justify-center h-10 w-10 hover:bg-white hover:text-[#087452] cursor-pointer"></i>
+                        <i
+                            class="fa-solid fa-right-to-bracket bg-[#23423c] text-white rounded-full flex items-center justify-center h-10 w-10 hover:bg-white hover:text-[#087452] cursor-pointer"></i>
+                    </div>
+                </div>
+                <div class="bg-red-800 w-full">d</div>
+            </section> -->
+            <section id="hero_section" class="flex items-center justify-center h-full w-full">
+                <div class="w-3/4 h-full flex items-center justify-center flex-col text-white text-center">
+                    <h1 class="text-[4vw]">Welcome to CSTR</h1>
+                    <p class="">Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore impedit natus illum modi
+                        commodi
+                        maxime iure placeat consequuntur, blanditiis consequatur. Lorem ipsum dolor, sit amet
+                        consectetur adipisicing
+                        elit. Aut, quos!</p>
+                    <button
+                        class="bg-[#23423c] px-6 rounded-full py-3 mt-5 hover:bg-[#153e37] duration-150 hover:px-8 relaltive ">Get
+                        Started</button>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+<script src="./script.js"></script>
+
 </html>
