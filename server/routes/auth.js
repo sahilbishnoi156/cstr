@@ -80,8 +80,11 @@ router.post(
     // If there are errors, return Bad request and the errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      success = false;
-      return res.status(400).json({ errors: errors.array(), success });
+      const errors_arr = errors.array();
+      const error = errors_arr.reduce((a, b) => {
+        return a + ", " + b.msg;
+      }, "");
+      return res.status(400).json({ error, success: false });
     }
 
     const { email, password } = req.body;

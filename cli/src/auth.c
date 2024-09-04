@@ -6,13 +6,13 @@
 #include <stdio.h>
 #include <json-c/json.h>
 
-const char *FILE_NAME = ".env";
+const char *TOKEN_FILE_NAME = ".env";
 const char *TOKEN_NAME = "AUTH_TOKEN";
 
 //! Get token from env file
 char *get_token()
 {
-    FILE *envFile = fopen(FILE_NAME, "r");
+    FILE *envFile = fopen(TOKEN_FILE_NAME, "r");
     if (!envFile)
     {
         return NULL;
@@ -80,7 +80,7 @@ bool authenticate_user()
     {
         fprintf(stderr, "cURL error: %s\n", curl_easy_strerror(res));
         free(token);
-        return false;
+        exit(1);
     }
 
     // Clean up
@@ -137,14 +137,14 @@ User *login_input()
 }
 
 //! login
-int login()
+void login()
 {
     // Verifying if already logged in
     bool isAuthenticated = authenticate_user();
     if (isAuthenticated)
     {
         printf("Already logged In\n");
-        return 0;
+        return;
     }
 
     User *user = login_input();
@@ -158,7 +158,8 @@ int login()
 
     if (!curl)
     {
-        return 1;
+        printf("Curl can not be initalized.\n");
+        exit(1);
     }
 
     // Variables for api call
@@ -180,7 +181,7 @@ int login()
     {
         printf("Error: curl appending headers failed\n");
         curl_easy_cleanup(curl);
-        return 1;
+        exit(EXIT_FAILURE);
     }
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 
@@ -196,19 +197,17 @@ int login()
     if (res != CURLE_OK)
     {
         fprintf(stderr, "cURL error: %s\n", curl_easy_strerror(res));
-        return false;
+        exit(EXIT_FAILURE);
     }
     // Clean up
     curl_easy_cleanup(curl);
     curl_slist_free_all(headers);
-
-    return true;
 }
 
 //! Save token in env file
 void save_token_to_env(const char *token)
 {
-    FILE *envFile = fopen(FILE_NAME, "a");
+    FILE *envFile = fopen(TOKEN_FILE_NAME, "a");
     if (!envFile)
     {
         printf("Error opening file for writing\n");
@@ -223,8 +222,6 @@ void save_token_to_env(const char *token)
 //! Saving auth token locally
 size_t validate_login_response(char *ptr, size_t size, size_t nmemb, void *stream)
 {
-    printf("%s\n", ptr);
-
     // Parse JSON response
     json_object *json = json_tokener_parse(ptr);
     if (json == NULL)
@@ -253,6 +250,7 @@ size_t validate_login_response(char *ptr, size_t size, size_t nmemb, void *strea
             {
                 const char *authtoken_value = json_object_get_string(authtoken);
                 save_token_to_env(authtoken_value);
+                printf("Logged in successfully.\n");
             }
         }
     }

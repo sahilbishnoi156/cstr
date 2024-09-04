@@ -1,0 +1,31 @@
+[
+  {
+    "label": "g",
+    "description": "",
+    "tags": [],
+    "command_output": "",
+    "exit_status": 0,
+    "source": "shell",
+    "aliases": []
+  },
+  {
+    "label": "a",
+    "description": "",
+    "tags": [],
+    "command_output": "",
+    "exit_status": 0,
+    "source": "shell",
+    "aliases": []
+  },
+  {
+    "label": "ls",
+    "description": "",
+    "tags": [],
+    "execution_count": 1,
+    "working_directory": "/mnt/SharedFolder/Desktop/cstr/cli",
+    "command_output": "",
+    "exit_status": 0,
+    "source": "shell",
+    "aliases": []
+  }
+]
