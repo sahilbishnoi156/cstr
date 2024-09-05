@@ -1,24 +1,58 @@
 [
   {
-    "label": "g",
+    "label": "hello",
+    "description": "description_input",
+    "tags": [],
+    "execution_count": 1,
+    "working_directory": "/mnt/SharedFolder/Desktop/cstr/cli",
+    "command_output": "",
+    "exit_status": 0,
+    "source": "",
+    "aliases": []
+  },
+  {
+    "label": "new",
     "description": "",
     "tags": [],
+    "execution_count": 1,
+    "working_directory": "/mnt/SharedFolder/Desktop/cstr/cli",
+    "command_output": "",
+    "exit_status": 0,
+    "source": "",
+    "aliases": []
+  },
+  {
+    "label": "zyx",
+    "description": "",
+    "tags": [],
+    "execution_count": 1,
+    "working_directory": "/mnt/SharedFolder/Desktop/cstr/cli",
     "command_output": "",
     "exit_status": 0,
     "source": "shell",
     "aliases": []
   },
   {
-    "label": "a",
     "description": "",
     "tags": [],
+    "execution_count": 1,
+    "working_directory": "/mnt/SharedFolder/Desktop/cstr/cli",
     "command_output": "",
     "exit_status": 0,
     "source": "shell",
     "aliases": []
   },
   {
-    "label": "ls",
+    "description": "",
+    "tags": [],
+    "execution_count": 1,
+    "working_directory": "/mnt/SharedFolder/Desktop/cstr/cli",
+    "command_output": "",
+    "exit_status": 0,
+    "source": "shell",
+    "aliases": []
+  },
+  {
     "description": "",
     "tags": [],
     "execution_count": 1,

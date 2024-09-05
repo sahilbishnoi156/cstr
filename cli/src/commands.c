@@ -6,8 +6,10 @@
 #include <curl/curl.h>
 #include <unistd.h>
 
+#define MAX_LINE_LENGTH 1024
+
 const char *DATA_FILE_NAME = "./data/commands.json";
-const char *HISTORY_FILE = "~/.bash_history";
+const char *HISTORY_FILE = "/.bash_history";
 
 // Define a function to get input from the user for a string field
 char *get_string_input(const char *prompt, const char *default_value, bool required)
@@ -19,7 +21,14 @@ char *get_string_input(const char *prompt, const char *default_value, bool requi
         exit(EXIT_FAILURE);
     }
 
-    printf("%s: ", prompt);
+    if (required)
+    {
+        printf("%s (required) : ", prompt);
+    }
+    else
+    {
+        printf("%s (default: \"%s\") : ", prompt, default_value);
+    }
     if (fgets(input, 1024, stdin) != NULL)
     {
         // Remove the newline character from the end of the input
@@ -52,14 +61,14 @@ char *get_string_input(const char *prompt, const char *default_value, bool requi
 }
 
 // Define a function to get input from the user for an integer field
-int get_integer_input(const char *prompt)
+int get_integer_input(const char *prompt, int default_val)
 {
     int input;
     char *endptr;
 
     while (1)
     {
-        printf("%s: ", prompt);
+        printf("%s (default: %d) : ", prompt, default_val);
         char *line = malloc(256 * sizeof(char));
         if (!line)
         {
@@ -72,11 +81,11 @@ int get_integer_input(const char *prompt)
             line[strcspn(line, "\n")] = 0;
         }
 
-        // If the input is empty, return 0
+        // If the input is empty, return default_val
         if (strlen(line) == 0)
         {
             free(line);
-            return 0;
+            return default_val;
         }
 
         // converting the input to an integer
@@ -178,57 +187,11 @@ char *verify_cwd(char *working_directory)
     }
 }
 
-// Define a function to create a JSON object from user input
-json_object *create_command_object()
-{
-    json_object *command = json_object_new_object();
-    if (!command)
-    {
-        fprintf(stderr, "Failed to create JSON object\n");
-        exit(EXIT_FAILURE);
-    }
-
-    char *label = get_string_input("Command", "", true);
-    json_object_object_add(command, "label", json_object_new_string(label));
-    free(label);
-
-    char *description = get_string_input("Description", "", false);
-    json_object_object_add(command, "description", json_object_new_string(description));
-    free(description);
-
-    json_object *tags = get_array_input("Tags (one per line, empty line to finish)");
-    json_object_object_add(command, "tags", tags);
-
-    int execution_count = get_integer_input("Execution count");
-    json_object_object_add(command, "execution_count", json_object_new_int(execution_count == 0 ? 1 : execution_count));
-
-    char *working_directory = verify_cwd(get_string_input("Working directory", "", false));
-    json_object_object_add(command, "working_directory", json_object_new_string(working_directory));
-    free(working_directory);
-
-    char *command_output = get_string_input("Command output", "", false);
-    json_object_object_add(command, "command_output", json_object_new_string(command_output));
-    free(command_output);
-
-    int exit_status = get_integer_input("Exit status: ");
-    json_object_object_add(command, "exit_status", json_object_new_int(exit_status));
-
-    char *source = get_string_input("Source", "shell", false);
-    json_object_object_add(command, "source", json_object_new_string(source));
-    free(source);
-
-    json_object *aliases = get_array_input("Aliases (one per line, empty line to finish)");
-    json_object_object_add(command, "aliases", aliases);
-
-    return command;
-}
-
 // Function to add a command locally
-void add_command_locally()
+void add_command_locally(json_object *command_input)
 {
     // Create command object from user input
-    json_object *command = create_command_object();
-    printf("%s\n", json_object_to_json_string(command));
+    json_object *command = command_input ? command_input : create_command_object("", "", NULL, 0, "", 0, "shell", NULL);
 
     // Path to the JSON file containing all commands
 
@@ -278,68 +241,205 @@ void add_command_locally()
         json_object_put(commands_array);
         return;
     }
-    fprintf(file, "%s\n", json_object_to_json_string(commands_array));
+    fprintf(file, "%s\n", json_object_to_json_string(commands_array)); // for development purposes
     fclose(file);
 
     // Free the JSON objects
     json_object_put(commands_array);
 
-    printf("Command added successfully.\n");
+    printf("\nCommand added successfully.\n");
 }
 
-void get_commands_from_history(int limit)
+// Define a function to create a JSON object with optional parameters
+json_object *create_command_object(
+    char label_input[],
+    char description_input[],
+    json_object *tags_input,
+    int execution_count_input,
+    char command_output_input[],
+    int exit_status_input,
+    char source_input[],
+    json_object *aliases_input)
 {
-    // Open the history file
-    FILE *fp = fopen(HISTORY_FILE, "r");
-    if (fp == NULL)
+    json_object *command = json_object_new_object();
+    if (!command)
     {
-        perror("Error opening history file");
-        return 1;
+        fprintf(stderr, "Failed to create JSON object\n");
+        exit(EXIT_FAILURE);
     }
 
-    // Seek to the end of the file
-    fseek(fp, 0, SEEK_END);
-    long file_size = ftell(fp);
-
-    // Allocate memory to store the lines
-    char **lines = malloc(limit * sizeof(char *));
-    for (int i = 0; i < limit; i++)
+    // If the label is provided, use it, otherwise ask for input
+    if (label_input && strlen(label_input) > 0)
     {
-        lines[i] = malloc(1024 * sizeof(char));
+        printf("Command : %s\n", label_input);
+    }
+    else
+    {
+        char *label = get_string_input("Command", label_input, true);
+        json_object_object_add(command, "label", json_object_new_string(label));
+        free(label);
     }
 
-    // Read the specified number of lines from the bottom
-    int lines_read = 0;
-    while (lines_read < limit)
+    // Same for description
+    char *description = get_string_input("Description", description_input, false);
+    json_object_object_add(command, "description", json_object_new_string(description));
+    free(description);
+
+    // For tags, use the provided tags_input or ask for input
+    json_object *tags = tags_input ? tags_input : get_array_input("Tags (one per line, empty line to finish)");
+    json_object_object_add(command, "tags", tags);
+
+    // For execution count, use the provided value or get user input
+    int execution_count = get_integer_input("Execution count", execution_count_input);
+    json_object_object_add(command, "execution_count", json_object_new_int(execution_count == 0 ? 1 : execution_count));
+
+    // For working directory, verify and either use the input or ask
+    char cwd[1024];
+    if (getcwd(cwd, sizeof(cwd)) == NULL)
     {
-        fseek(fp, file_size - 1024, SEEK_SET);
-        char line[1024];
-        fgets(line, 1024, fp);
-        line[strcspn(line, "\n")] = 0; // remove newline character
+        fprintf(stderr, "Failed to get current working directory\n");
+        exit(EXIT_FAILURE);
+    }
+    char *working_directory = verify_cwd(get_string_input("Working directory", cwd, false));
+    json_object_object_add(command, "working_directory", json_object_new_string(working_directory));
+    free(working_directory);
 
-        // Store the line in the array
-        strcpy(lines[lines_read], line);
-        lines_read++;
+    // Same logic for command output
+    char *command_output = get_string_input("Command output", command_output_input, false);
+    json_object_object_add(command, "command_output", json_object_new_string(command_output));
+    free(command_output);
 
-        // Move to the previous line
-        file_size -= strlen(line) + 1; // +1 for newline character
+    // For exit status
+    int exit_status = get_integer_input("Exit status", exit_status_input);
+    json_object_object_add(command, "exit_status", json_object_new_int(exit_status));
+
+    // For source
+    char *source = get_string_input("Source", source_input, false);
+    json_object_object_add(command, "source", json_object_new_string(source));
+    free(source);
+
+    // For aliases
+    json_object *aliases = aliases_input ? aliases_input : get_array_input("Aliases (one per line, empty line to finish)");
+    json_object_object_add(command, "aliases", aliases);
+
+    return command;
+}
+
+void add_commands_from_history(char *limit_string)
+{
+    // Verifying if limit is in correct format
+    if (strlen(limit_string) == 0)
+    {
+        printf("Invalid command\n");
+        exit(EXIT_FAILURE);
     }
 
-    // Close the history file
-    fclose(fp);
+    char *endptr;
 
-    // Print the read lines
-    for (int i = 0; i < limit; i++)
+    // Converting the input to an integer
+    int limit_int = strtol(limit_string, &endptr, 10);
+
+    // If the input is not a valid integer, print an error message and retry
+    if (endptr == limit_string || *endptr != '\0')
     {
-        printf("%s\n", lines[i]);
+        printf("Invalid attribute \"%s\"\n", limit_string);
+        exit(EXIT_FAILURE);
     }
 
-    // Free the allocated memory
-    for (int i = 0; i < limit; i++)
+    char **lines = get_lines_from_history_file(limit_int);
+
+    // Process lines and create command objects
+    for (int i = 0; i < limit_int; i++)
+    {
+
+        // Remove the newline character from the end of the line
+        lines[i][strcspn(lines[i], "\n")] = 0;
+
+        // Create command JSON object only with label (optional parameters are NULL)
+        json_object *command = create_command_object(
+            lines[i], // label from history
+            "",       // description
+            NULL,     // tags
+            0,        // execution count
+            "",       // command output
+            0,        // exit status
+            "shell",  // source
+            NULL      // aliases
+        );
+        // Add the command to the JSON array
+
+        add_command_locally(command);
+        printf("\n");
+    }
+
+    // Free memory
+    for (int i = 0; i < limit_int; i++)
     {
         free(lines[i]);
     }
     free(lines);
 
-    return 0;
+    printf("Everything done successfully.\n");
+}
+
+char **get_lines_from_history_file(int limit)
+{
+    // Open the history file
+    char history_file_path[256];
+    snprintf(history_file_path, sizeof(history_file_path), "%s/%s", getenv("HOME"), HISTORY_FILE);
+
+    // opening history file
+    FILE *file = fopen(history_file_path, "r");
+    if (file == NULL)
+    {
+        printf("Could not open %s file \n", history_file_path);
+        exit(EXIT_FAILURE);
+    }
+
+    // Initialize the head of the linked list
+    Line *head = NULL;
+
+    // Read the file line by line
+    char buffer[MAX_LINE_LENGTH];
+    while (fgets(buffer, MAX_LINE_LENGTH, file) != NULL)
+    {
+        // Create a new line
+        Line *new_line = (Line *)malloc(sizeof(Line));
+        new_line->data = (char *)malloc(strlen(buffer) + 1);
+        strcpy(new_line->data, buffer);
+        new_line->next = head;
+
+        // Update the head
+        head = new_line;
+    }
+
+    // Close the file
+    fclose(file);
+
+    // Print the last n lines
+    int count = 0;
+    Line *current = head;
+
+    char **lines = malloc(limit * sizeof(char *));
+
+    int i = 0;
+    while (current != NULL && count < limit)
+    {
+        lines[i] = malloc(strlen(current->data) + 1);
+        strcpy(lines[i], current->data);
+        i++;
+        current = current->next;
+        count++;
+    }
+
+    // Free the memory
+    current = head;
+    while (current != NULL)
+    {
+        Line *next = current->next;
+        free(current->data);
+        free(current);
+        current = next;
+    }
+    return lines;
 }

@@ -26,11 +26,11 @@ int main(int argc, char *argv[])
 
     if (strcmp(action, "add") == 0 && argc == 2)
     {
-        add_command_locally();
+        add_command_locally(NULL);
     }
-    else if (strcmp(action, "add") == 0 && strcmp(attribute, "all") && argc == 3)
+    else if (strcmp(action, "add") == 0 && attribute && argc == 3)
     {
-        printf("Working on it\n");
+        add_commands_from_history(attribute);
     }
     else if (strcmp(action, "man") == 0 && argc == 2)
     {
