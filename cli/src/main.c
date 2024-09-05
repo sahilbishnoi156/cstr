@@ -1,9 +1,10 @@
 #include <stdio.h>
-#include "auth.h"
 #include <string.h>
-#include "commands.h"
 #include <json-c/json.h>
 #include <utils.h>
+#include "auth.h"
+#include "push.h"
+#include "commands.h"
 
 int main(int argc, char *argv[])
 {
@@ -46,11 +47,32 @@ int main(int argc, char *argv[])
     }
     else if (strcmp(action, "fetch") == 0)
     {
+        bool is_authenticated = authenticate_user();
+        if (!is_authenticated)
+        {
+            printf("Please login before using this service.\n");
+            return 1;
+        }
         printf("Working on it\n");
     }
     else if (strcmp(action, "push") == 0)
     {
-        printf("Working on it\n");
+        bool is_authenticated = authenticate_user();
+        if (!is_authenticated)
+        {
+            printf("Please login before using this service.\n");
+            return 1;
+        }
+        const char *url = "http://localhost:3000/api/command/createCommands";
+
+        // Read the commands.json file
+        char *json_data = read_json_file();
+
+        // Process and send JSON data in chunks
+        process_and_send_json(json_data, url);
+
+        // Free the JSON data
+        free(json_data);
     }
     else
     {

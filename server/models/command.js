@@ -3,7 +3,7 @@ const { Schema, ObjectId } = mongoose;
 
 const CommandSchema = new Schema({
   label: { type: String, required: true },
-  description: { type: String, required: true },
+  description: { type: String },
   tags: [{ type: String }],
   execution_count: { type: Number, default: 0 },
   last_executed_at: { type: Date },

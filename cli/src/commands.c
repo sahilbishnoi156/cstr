@@ -191,7 +191,7 @@ char *verify_cwd(char *working_directory)
 void add_command_locally(json_object *command_input)
 {
     // Create command object from user input
-    json_object *command = command_input ? command_input : create_command_object("", "", NULL, 0, "", 0, "shell", NULL);
+    json_object *command = command_input ? command_input : create_command_object("", "", NULL, 1, "", 0, "shell", NULL);
 
     // Path to the JSON file containing all commands
 
@@ -272,6 +272,7 @@ json_object *create_command_object(
     if (label_input && strlen(label_input) > 0)
     {
         printf("Command : %s\n", label_input);
+        json_object_object_add(command, "label", json_object_new_string(label_input));
     }
     else
     {
@@ -322,6 +323,9 @@ json_object *create_command_object(
     json_object *aliases = aliases_input ? aliases_input : get_array_input("Aliases (one per line, empty line to finish)");
     json_object_object_add(command, "aliases", aliases);
 
+    json_object *is_globally_avail = json_object_new_boolean(false);
+    json_object_object_add(command, "is_globally_avail", is_globally_avail);
+
     return command;
 }
 
@@ -355,19 +359,25 @@ void add_commands_from_history(char *limit_string)
         // Remove the newline character from the end of the line
         lines[i][strcspn(lines[i], "\n")] = 0;
 
-        // Create command JSON object only with label (optional parameters are NULL)
+        // Command doesn't exist, create new command JSON object
         json_object *command = create_command_object(
             lines[i], // label from history
             "",       // description
             NULL,     // tags
-            0,        // execution count
+            1,        // execution count (initial value)
             "",       // command output
             0,        // exit status
             "shell",  // source
             NULL      // aliases
         );
-        // Add the command to the JSON array
 
+        if (command == NULL)
+        {
+            fprintf(stderr, "Error: Failed to create command object\n");
+            exit(EXIT_FAILURE);
+        }
+
+        // Add the new command to local storage
         add_command_locally(command);
         printf("\n");
     }

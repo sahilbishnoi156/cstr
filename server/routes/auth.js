@@ -106,7 +106,7 @@ router.post(
       }
 
       const data = {
-        user: {
+        creator: {
           id: user.id,
         },
       };

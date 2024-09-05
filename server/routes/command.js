@@ -3,6 +3,7 @@ const router = express.Router();
 const { body, validationResult } = require("express-validator");
 const Command = require("../models/command");
 const stringSimilarity = require("string-similarity");
+const fetchuser = require("../middleware/fetcher");
 
 router.post(
   "/createCommand",
@@ -26,6 +27,57 @@ router.post(
     } catch (error) {
       console.log(error);
       res.status(500).send("Something went wrong");
+    }
+  }
+);
+
+router.post(
+  "/createCommands",
+  fetchuser,
+  [
+    body("commands").isArray().withMessage("Commands must be an array"),
+    body("commands.*.label", "Enter a valid command").notEmpty(),
+  ],
+  async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        const errors_arr = errors.array();
+        const error = errors_arr.reduce((a, b) => {
+          return a + " " + b.msg;
+        }, "");
+        return res.status(400).send(error + "\n");
+      }
+
+      const { commands, creator } = req.body; // Extract creator and commands
+
+      // Validate that the creator is provided and commands are in the correct format
+      if (!creator || !Array.isArray(commands)) {
+        return res.status(400).send("Invalid request format\n");
+      }
+
+      for (let i = 0; i < commands.length; i++) {
+        const command = commands[i];
+        const newCommand = new Command({
+          label: command.label,
+          description: command.description,
+          tags: command.tags,
+          execution_count: command.execution_count,
+          working_directory: command.working_directory,
+          command_output: command.command_output,
+          exit_status: command.exit_status,
+          source: command.source,
+          aliases: command.aliases,
+          creator,
+        });
+
+        await newCommand.save();
+      }
+
+      res.status(200).send("Data saved successfully\n");
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Something went wrong\n");
     }
   }
 );

@@ -29,7 +29,7 @@ A simple C program to manage and retrieve shell commands with additional feature
 
 ## Compilation
 
-- Compile the project with: `gcc -Iinclude -Wall -o bin/cstr src/main.c src/commands.c src/auth.c src/utils.c -lcurl -ljson-c`
+- Compile the project with: `gcc -Iinclude -Wall -o bin/cstr src/main.c src/commands.c src/auth.c src/utils.c src/push.c -lcurl -ljson-c`
 
 ## License
 
