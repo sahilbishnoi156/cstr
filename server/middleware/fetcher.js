@@ -8,7 +8,6 @@ const fetchuser = (req, res, next) => {
   try {
     const data = jwt.verify(token, process.env.JWT_SECRET);
     req.body.creator = data.creator.id;
-    console.log(data);
     next();
   } catch (error) {
     console.log(error);

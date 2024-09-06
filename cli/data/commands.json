@@ -9,6 +9,20 @@
     "exit_status": 0,
     "source": "shell",
     "aliases": ["ll"],
-    "is_globally_avail": true 
+    "created_at": "9/6/2024",
+    "is_globally_avail": true
+  },
+  {
+    "label": "ls -la",
+    "description": "to get all files",
+    "tags": [],
+    "execution_count": 1,
+    "working_directory": "/mnt/SharedFolder/Desktop/cstr/cli",
+    "command_output": "",
+    "exit_status": 0,
+    "source": "shell",
+    "aliases": ["ll"],
+    "created_at": "9/6/2024",
+    "is_globally_avail": true
   }
 ]

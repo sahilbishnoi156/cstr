@@ -35,8 +35,8 @@ router.post(
   "/createCommands",
   fetchuser,
   [
-    body("commands").isArray().withMessage("Commands must be an array"),
-    body("commands.*.label", "Enter a valid command").notEmpty(),
+    body("commands").isArray().withMessage("Commands must be an array\n"),
+    body("commands.*.label", "Enter a valid command\n").notEmpty(),
   ],
   async (req, res) => {
     try {
@@ -82,14 +82,30 @@ router.post(
   }
 );
 
-router.get("/getcommands", async (req, res) => {
-  const creator = req.query.creator;
+router.get("/getcommands", fetchuser, async (req, res) => {
+  const { creator } = req.body;
   try {
     const commands = await Command.find({ creator });
-    res.status(200).json({ data: commands, success: true });
+    const newCommands = commands.map((command) => {
+      const readable_date = new Date(command.created_at).toLocaleDateString();
+      return {
+        label: command.label,
+        description: command.description,
+        tags: command.tags,
+        execution_count: command.execution_count,
+        working_directory: command.working_directory,
+        command_output: command.command_output,
+        exit_status: command.exit_status,
+        source: command.source,
+        aliases: command.aliases,
+        created_at: readable_date,
+        is_globally_avail: true,
+      };
+    });
+    res.status(200).json({ data: newCommands });
   } catch (error) {
     console.error(error.message);
-    res.status(500).send("Something went wrong");
+    res.status(500).json({ error: error.message + "\n" });
   }
 });
 

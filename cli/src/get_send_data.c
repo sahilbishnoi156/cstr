@@ -4,7 +4,7 @@
 #include <curl/curl.h>
 #include <json-c/json.h>
 #include "auth.h"
-#include "push.h"
+#include "get_send_data.h"
 
 #define MAX_CHUNK_SIZE 10
 
@@ -96,12 +96,6 @@ void send_curl_post_request(const char *url, const char *json_array, const char 
 
         // Set Content-Type header
         headers = curl_slist_append(headers, "Content-Type: application/json");
-        if (!headers)
-        {
-            printf("Error: curl appending headers failed\n");
-            curl_easy_cleanup(curl);
-            exit(EXIT_FAILURE);
-        }
 
         // Set Authorization header with creator token
         char auth_header[256];
@@ -226,4 +220,115 @@ void process_and_send_json(const char *json_data, const char *url)
 
     json_object_put(filtered_array); // Free memory for the filtered array
     json_object_put(parsed_json);    // Free memory for the original JSON array
+}
+
+void get_all_commands()
+{
+    bool is_authenticated = authenticate_user();
+    if (!is_authenticated)
+    {
+        printf("Please login before using this service\n");
+        exit(EXIT_SUCCESS);
+    }
+
+    CURL *curl;
+    CURLcode res;
+
+    curl_global_init(CURL_GLOBAL_ALL);
+    curl = curl_easy_init();
+
+    if (curl)
+    {
+        struct curl_slist *headers = NULL;
+
+        // Set Authorization header with creator token
+        char *token = get_token();
+        char auth_header[256];
+        snprintf(auth_header, sizeof(auth_header), "authToken:%s", token);
+
+        // appending headers to headers
+        headers = curl_slist_append(headers, "Content-Type: application/json");
+
+        headers = curl_slist_append(headers, auth_header);
+
+        if (!headers)
+        {
+            perror("Error: curl appending headers failed\n");
+            exit(EXIT_SUCCESS);
+        }
+
+        curl_easy_setopt(curl, CURLOPT_URL, "http://localhost:3000/api/command/getcommands");
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, save_to_file);
+
+        res = curl_easy_perform(curl);
+
+        if (res != CURLE_OK)
+        {
+            fprintf(stderr, "Server error : %s\n", curl_easy_strerror(res));
+            curl_easy_cleanup(curl);
+            exit(EXIT_FAILURE);
+        }
+        curl_easy_cleanup(curl);
+    }
+    curl_global_cleanup();
+}
+
+//! saving global commands to local
+size_t save_to_file(char *ptr, size_t size, size_t nmemb, void *stream)
+{
+    // Parse JSON response
+    json_object *json = json_tokener_parse(ptr);
+    if (json == NULL)
+    {
+        printf("Error parsing response JSON\n");
+        json_object_put(json);
+        return size * nmemb;
+    }
+
+    // Extract success field
+    json_object *error = json_object_object_get(json, "error");
+    if (!error)
+    {
+        // Extract data field
+        json_object *data_obj = json_object_object_get(json, "data");
+        if (data_obj != NULL)
+        {
+            // Open the file for writing
+            FILE *fp = fopen("./data/commands.json", "w");
+            if (!fp)
+            {
+                perror("Error: Failed to open commands file locally\n");
+                json_object_put(json);
+                exit(EXIT_FAILURE);
+            }
+
+            // Write data to the file
+            const char *data = json_object_get_string(data_obj);
+            size_t data_len = strlen(data);
+            size_t written = fwrite(data, 1, data_len, fp);
+            if (written != data_len)
+            {
+                perror("Error: Failed to write complete data to file\n");
+                json_object_put(json);
+                fclose(fp);
+                exit(EXIT_FAILURE);
+            }
+
+            // Close the file
+            fclose(fp);
+            // Print success message
+            printf("Database synced successfully\n");
+        }
+    }
+    else
+    {
+        printf("Error: %s", json_object_get_string(error));
+        exit(EXIT_FAILURE);
+    }
+
+    json_object_put(json);
+
+    // Return the total size of the data written
+    return size * nmemb;
 }

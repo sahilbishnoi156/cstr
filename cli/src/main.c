@@ -3,7 +3,7 @@
 #include <json-c/json.h>
 #include <utils.h>
 #include "auth.h"
-#include "push.h"
+#include "get_send_data.h"
 #include "commands.h"
 
 int main(int argc, char *argv[])
@@ -47,13 +47,19 @@ int main(int argc, char *argv[])
     }
     else if (strcmp(action, "fetch") == 0)
     {
-        bool is_authenticated = authenticate_user();
-        if (!is_authenticated)
+        char input;
+        printf("All the local commands will be lost after this action. ");
+        printf("Please use \"push\" action beforehead to confirm if any unstaged commands exists.\n");
+        printf("Do you still want to continue? (Y/N) : ");
+        scanf("%c", &input);
+        if (input == 'y' || input == 'Y')
         {
-            printf("Please login before using this service.\n");
-            return 1;
+            get_all_commands();
         }
-        printf("Working on it\n");
+        else
+        {
+            printf("Action cancelled\n");
+        }
     }
     else if (strcmp(action, "push") == 0)
     {
