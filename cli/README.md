@@ -6,18 +6,17 @@ A simple C program to manage and retrieve shell commands with additional feature
 
 ## Usage
 
-- Add a command: `./bin/cstr add "ls -la"`
-- Add all history commands: `./bin/cstr add all`
+- Add a command: `./bin/cstr add`
+- Add all history commands: `./bin/cstr add <limit>` (limit is the number of commands you want to add)
 - Show the manual: `./bin/cstr man`
 - Log in to the service: `./bin/cstr login`
-- Find a specific command:
-  - By command name: `./bin/cstr find one "ls -la"`
-  - By directory: `./bin/cstr find dir "/path/to/directory"` (optional: current directory if not specified)
-  - By source: `./bin/cstr find source "shell"`
-  - By tag: `./bin/cstr find tag "utility"`
-  - Retrieve all commands: `./bin/cstr find all`
-  - By alias: `./bin/cstr find alias "list"`
-  - By date: `./bin/cstr find date "10 days"`, `./bin/cstr find date "1 month"`, `./bin/cstr find date "today"`
+- Find a specific command: `./bin/cstr get`
+  - Available options:-
+  - All: `To get all commands` (limit is 10. use website to see all commands)
+  - Source: `To search commands by source"`
+  - Directory: `To search commands by working_directory"`
+  - Tags: `To search commands by tags`
+  - Alias: `To search commands by aliases`
 - Fetch the latest data from the service: `./bin/cstr fetch`
 - Push local changes to the service: `./bin/cstr push`
 
@@ -26,10 +25,11 @@ A simple C program to manage and retrieve shell commands with additional feature
 - `src/`: Source code files.
 - `include/`: Header files.
 - `data/`: JSON file for storing commands.
+- `bin/` : Executable file
 
 ## Compilation
 
-- Compile the project with: `gcc -Iinclude -Wall -o bin/cstr src/main.c src/commands.c src/auth.c src/utils.c src/get_send_data.c -lcurl -ljson-c`
+- Compile the project with: `gcc -Iinclude -Wall -o bin/cstr src/main.c src/commands.c src/auth.c src/utils.c src/fetch_push.c src/get.c -lcurl -ljson-c -lncurses`
 
 ## License
 

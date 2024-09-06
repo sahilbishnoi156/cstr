@@ -4,7 +4,7 @@
 #include <curl/curl.h>
 #include <json-c/json.h>
 #include "auth.h"
-#include "get_send_data.h"
+#include "fetch_push.h"
 
 #define MAX_CHUNK_SIZE 10
 
@@ -222,6 +222,7 @@ void process_and_send_json(const char *json_data, const char *url)
     json_object_put(parsed_json);    // Free memory for the original JSON array
 }
 
+// Function to get all commands
 void get_all_commands()
 {
     bool is_authenticated = authenticate_user();

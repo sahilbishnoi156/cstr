@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const { body, validationResult } = require("express-validator");
 const Command = require("../models/command");
-const stringSimilarity = require("string-similarity");
 const fetchuser = require("../middleware/fetcher");
 
 router.post(
@@ -84,8 +83,11 @@ router.post(
 
 router.get("/getcommands", fetchuser, async (req, res) => {
   const { creator } = req.body;
+  const { limit } = req.query;
   try {
-    const commands = await Command.find({ creator });
+    const commands = await Command.find({ creator }).limit(
+      limit ? parseInt(limit) : 0
+    );
     const newCommands = commands.map((command) => {
       const readable_date = new Date(command.created_at).toLocaleDateString();
       return {
@@ -109,45 +111,63 @@ router.get("/getcommands", fetchuser, async (req, res) => {
   }
 });
 
-router.get("/searchcommands", async (req, res) => {
-  const { searchString } = req.query;
-
-  if (!searchString) {
-    return res
-      .status(400)
-      .json({ success: false, message: "Search string is required" });
-  }
-
+router.post("/getbyfield", fetchuser, async (req, res) => {
   try {
-    // First, try to find exact or near-exact matches with regex
-    const searchPattern = new RegExp(searchString.split(" ").join(".*"), "i");
-    let commands = await Command.find({ command: { $regex: searchPattern } });
+    const { creator, key, value } = req.body;
 
-    if (commands.length === 0) {
-      // If no commands found, fetch a limited set of commands for fuzzy searching
-      const initialPattern = new RegExp(`^${searchString.split(" ")[0]}`, "i"); // Fetch based on the first word or prefix
-      const potentialCommands = await Command.find({
-        command: { $regex: initialPattern },
-      }).limit(50);
+    let response_commands = await Command.find(
+      {
+        creator,
+        [key]: { $regex: value, $options: "i" },
+      },
+      "-_id -__v"
+    );
 
-      // Perform string similarity search on this limited set
-      const commandStrings = potentialCommands.map((cmd) => cmd.command);
-      const matches = stringSimilarity.findBestMatch(
-        searchString,
-        commandStrings
-      );
-      const bestMatches = matches.ratings
-        .filter((match) => match.rating > 0.3)
-        .map((match) => match.target);
-
-      // Retrieve full command data for best matches
-      commands = await Command.find({ command: { $in: bestMatches } });
+    // If no exact match is found, search for nearest values using MongoDB's aggregation pipeline
+    if (response_commands.length === 0) {
+      const pipeline = [
+        {
+          $match: { creator },
+        },
+        {
+          $addFields: {
+            distance: { $abs: { $subtract: [`$${key}`, value] } },
+          },
+        },
+        {
+          $sort: { distance: 1 },
+        },
+        {
+          $limit: 10, // return up to 10 nearest matches
+        },
+      ];
+      response_commands = await Command.aggregate(pipeline);
     }
 
-    res.status(200).json({ data: commands, success: true });
+    const commands = response_commands.map((command) => {
+      const readable_date = new Date(command.created_at).toLocaleDateString();
+      return {
+        label: command.label,
+        description: command.description,
+        tags: command.tags,
+        execution_count: command.execution_count,
+        working_directory: command.working_directory,
+        command_output: command.command_output,
+        exit_status: command.exit_status,
+        source: command.source,
+        aliases: command.aliases,
+        created_at: readable_date,
+        is_globally_avail: true,
+        created_at: readable_date,
+      };
+    });
+    if (commands.length === 0) {
+      return res.status(404).json({ data: { message: "No commands found" } });
+    }
+    res.status(200).json({ data: commands });
   } catch (error) {
     console.error(error.message);
-    res.status(500).send("Internal server error occurred");
+    res.status(500).send("Internal server error occurred : " + error.message);
   }
 });
 

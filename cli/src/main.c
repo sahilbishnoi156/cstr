@@ -3,8 +3,9 @@
 #include <json-c/json.h>
 #include <utils.h>
 #include "auth.h"
-#include "get_send_data.h"
+#include "fetch_push.h"
 #include "commands.h"
+#include "get.h"
 
 int main(int argc, char *argv[])
 {
@@ -41,11 +42,11 @@ int main(int argc, char *argv[])
     {
         login();
     }
-    else if (strcmp(action, "get") == 0 && argc == 3)
+    else if (strcmp(action, "get") == 0)
     {
-        printf("Working on it\n");
+        get_commands();
     }
-    else if (strcmp(action, "fetch") == 0)
+    else if (strcmp(action, "fetch") == 0 && argc == 2)
     {
         char input;
         printf("All the local commands will be lost after this action. ");
@@ -61,7 +62,7 @@ int main(int argc, char *argv[])
             printf("Action cancelled\n");
         }
     }
-    else if (strcmp(action, "push") == 0)
+    else if (strcmp(action, "push") == 0 && argc == 2)
     {
         bool is_authenticated = authenticate_user();
         if (!is_authenticated)
