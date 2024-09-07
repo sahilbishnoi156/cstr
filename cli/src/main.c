@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <json-c/json.h>
-#include <utils.h>
+#include "utils.h"
 #include "auth.h"
 #include "fetch_push.h"
 #include "commands.h"
@@ -9,6 +9,9 @@
 
 int main(int argc, char *argv[])
 {
+    // setting file paths and urls
+    initialize_environment();
+
     char *action;
     char *attribute;
 
@@ -60,6 +63,14 @@ int main(int argc, char *argv[])
     }
     else if (strcmp(action, "fetch") == 0 && argc == 2)
     {
+
+        bool is_authenticated = authenticate_user();
+        if (!is_authenticated)
+        {
+            printf("Please login before using this service\n");
+            exit(EXIT_SUCCESS);
+        }
+
         char input;
         printf("All the local commands will be lost after this action. ");
         printf("Please use \"push\" action beforehand to confirm if any unstaged commands exists.\n");
@@ -82,13 +93,12 @@ int main(int argc, char *argv[])
             printf("Please login before using this service.\n");
             return 1;
         }
-        const char *url = "http://localhost:3000/api/command/createCommands";
 
         // Read the commands.json file
         char *json_data = read_json_file();
 
         // Process and send JSON data in chunks
-        process_and_send_json(json_data, url);
+        process_and_send_json(json_data, CREATE_COMMAND_URL);
 
         // Free the JSON data
         free(json_data);

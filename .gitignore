@@ -1,1 +1,3 @@
 .vscode
+./cli/setup.sh
+./cli/bin/cstr

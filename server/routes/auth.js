@@ -135,16 +135,43 @@ router.get("/getuser", fetchuser, async (req, res) => {
 
 router.get("/authenticate", async (req, res) => {
   const token = req.query.token;
+
+  // Check if token is missing
   if (!token) {
-    res.status(401).send("Error: Please authenticate using a valid token");
+    return res
+      .status(401)
+      .send("Error: Please authenticate using a valid token");
   }
+
   try {
+    // Verify the token
     const data = jwt.verify(token, JWT_SECRET);
-    // console.log(data);
-    res.status(200).send(data);
+
+    // If verification is successful, respond with the data
+    res.status(200).json({ data: data });
   } catch (error) {
+    // Handle different JWT errors
+    if (error.name === "TokenExpiredError") {
+      return res
+        .status(401)
+        .json({ error: "Error: Authentication token has expired" });
+    }
+    if (error.name === "JsonWebTokenError") {
+      return res
+        .status(401)
+        .json({ error: "Error: Invalid authentication token" });
+    }
+    if (error.name === "NotBeforeError") {
+      return res
+        .status(401)
+        .json({ error: "Error: Authentication token not active yet" });
+    }
+
+    // For other errors, log them and send a generic message
     console.log(error);
-    res.status(401).send("Error: Something went wrong");
+    res
+      .status(500)
+      .json({ error: "Error: Authentication failed error unknown" });
   }
 });
 

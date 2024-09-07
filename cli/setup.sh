@@ -22,32 +22,35 @@ if [ "$(uname)" != "Linux" ]; then
     exit 1
 fi
 
-# Check if the folder /mnt/cstrtool exists
-if [ ! -d "/mnt/cstrtool" ]; then
-    echo "/mnt/cstrtool does not exist. Creating directory and cloning repository..."
+# Set the path to the cstrtool folder in the user's home directory
+CSTRTOOL_DIR="$HOME/cstrtool"
+
+# Check if the folder ~/cstrtool exists
+if [ ! -d "$CSTRTOOL_DIR" ]; then
+    echo "$CSTRTOOL_DIR does not exist. Creating directory and cloning repository..."
 
     # Create the directory
-    sudo mkdir -p /mnt/cstrtool
+    mkdir -p "$CSTRTOOL_DIR"
 
     # Clone only the 'cli' folder from the repository
-    git clone --depth=1 --filter=blob:none --no-checkout https://github.com/sahilbishnoi156/cstr /mnt/cstrtool
-    cd /mnt/cstrtool || exit
+    git clone --depth=1 --filter=blob:none --no-checkout https://github.com/sahilbishnoi156/cstr "$CSTRTOOL_DIR"
+    cd "$CSTRTOOL_DIR" || exit
     git sparse-checkout init --cone
     git sparse-checkout set cli
     git checkout
 else
-    echo "/mnt/cstrtool exists."
+    echo "$CSTRTOOL_DIR exists."
 
-    # Check if /mnt/cstrtool/cli folder exists
-    if [ ! -d "/mnt/cstrtool/cli" ]; then
-        echo "/mnt/cstrtool/cli does not exist. Cloning 'cli' folder from repository..."
+    # Check if ~/cstrtool/cli folder exists
+    if [ ! -d "$CSTRTOOL_DIR/cli" ]; then
+        echo "$CSTRTOOL_DIR/cli does not exist. Cloning 'cli' folder from repository..."
 
         # Clone only the 'cli' folder from the repository
-        cd /mnt/cstrtool || exit
+        cd "$CSTRTOOL_DIR" || exit
         git sparse-checkout set cli
         git checkout
     else
-        echo "/mnt/cstrtool/cli already exists."
+        echo "$CSTRTOOL_DIR/cli already exists."
     fi
 fi
 
@@ -63,11 +66,11 @@ else
     exit 1
 fi
 
-# Navigate to /mnt/cstrtool/cli and compile the project
-cd /mnt/cstrtool/cli || exit
+# Navigate to ~/cstrtool/cli and compile the project
+cd "$CSTRTOOL_DIR/cli" || exit
 gcc -Iinclude -Wall -o bin/cstr src/main.c src/commands.c src/auth.c src/utils.c src/fetch_push.c src/get.c -lcurl -ljson-c -lncurses
 
 # Create a symbolic link for the executable
-sudo ln -sf /mnt/cstrtool/cli/bin/cstr /usr/local/bin/cstr
+sudo ln -sf "$CSTRTOOL_DIR/cli/bin/cstr" /usr/local/bin/cstr
 
 echo "Setup complete. The 'cstr' executable is available globally."

@@ -5,16 +5,17 @@
 #include <curl/curl.h>
 #include <stdio.h>
 #include <json-c/json.h>
+#include "utils.h"
 
-const char *TOKEN_FILE_NAME = ".env";
 const char *TOKEN_NAME = "AUTH_TOKEN";
 
 //! Get token from env file
 char *get_token()
 {
-    FILE *envFile = fopen(TOKEN_FILE_NAME, "r");
+    FILE *envFile = fopen(ENV, "r");
     if (!envFile)
     {
+        printf("FAILED TO OPEN ENV FILE\n");
         return NULL;
     }
 
@@ -46,13 +47,10 @@ char *get_token()
 //! Authenticate user from token
 bool authenticate_user()
 {
-    char *token = get_token();
-    if (!token)
+    if (!AUTH_TOKEN)
     {
-        free(token);
         return false;
     }
-
     CURL *curl;
     CURLcode res;
 
@@ -60,38 +58,52 @@ bool authenticate_user()
     curl = curl_easy_init();
     if (!curl)
     {
-        free(token);
         return false;
     }
 
-    // Concating token and url
-    char url[300] = "http://localhost:3000/api/auth/authenticate?token=";
-    strcat(url, token);
-
     // For printing response
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, print_decoded_token);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, verify_token);
 
     // Set the API endpoint URL
-    curl_easy_setopt(curl, CURLOPT_URL, url);
+    curl_easy_setopt(curl, CURLOPT_URL, VERIFY_TOKEN_URL);
 
     // Make the POST API call
     res = curl_easy_perform(curl);
     if (res != CURLE_OK)
     {
         fprintf(stderr, "cURL error: %s\n", curl_easy_strerror(res));
-        free(token);
         exit(1);
     }
 
     // Clean up
     curl_easy_cleanup(curl);
-    free(token);
     return true;
 }
 
 //! Saving auth token locally
-size_t print_decoded_token(char *ptr, size_t size, size_t nmemb, void *stream)
+size_t verify_token(char *ptr, size_t size, size_t nmemb, void *stream)
 {
+    // Parse JSON response
+    json_object *json = json_tokener_parse(ptr);
+    if (json == NULL)
+    {
+        printf("Error parsing response JSON\n");
+        json_object_put(json);
+        exit(EXIT_FAILURE);
+    }
+
+    // Extract success field
+    json_object *error = json_object_object_get(json, "error");
+    if (error)
+    {
+        printf("%s\n", json_object_get_string(error));
+        json_object_put(json);
+        exit(EXIT_FAILURE);
+    }
+
+    json_object_put(json);
+
+    // Return the total size of the data written
     return size * nmemb;
 }
 
@@ -165,11 +177,8 @@ void login()
     // Variables for api call
     char userData[1024];
 
-    // url for login api
-    char url[300] = "http://localhost:3000/api/auth/login";
-
     // Set the API endpoint URL
-    curl_easy_setopt(curl, CURLOPT_URL, url);
+    curl_easy_setopt(curl, CURLOPT_URL, LOGIN_URL);
 
     // Set the request method to POST
     curl_easy_setopt(curl, CURLOPT_POST, 1L);
@@ -207,7 +216,7 @@ void login()
 //! Save token in env file
 void save_token_to_env(const char *token)
 {
-    FILE *envFile = fopen(TOKEN_FILE_NAME, "a");
+    FILE *envFile = fopen(ENV, "a");
     if (!envFile)
     {
         printf("Error opening file for writing\n");

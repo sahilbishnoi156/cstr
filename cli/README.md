@@ -80,10 +80,6 @@ This project provides an executable binary that can perform various tasks relate
 
   - [Install required libraries](#package-Installation-of-Required-Libraries)
 
-  - If executable file is present then give it permmission
-
-    `$ chmod +x cstr/cli/bin/cstr`
-
   - Compile the code and generate executable file
 
     `$ gcc -Iinclude -Wall -o bin/cstr src/main.c src/commands.c src/auth.c src/utils.c src/fetch_push.c src/get.c -lcurl -ljson-c -lncurses`
@@ -106,7 +102,16 @@ This project provides an executable binary that can perform various tasks relate
 
     `$ ./bin/cstr <actions>`
 
-- [Install executable file](https://firebasestorage.googleapis.com/v0/b/dropbox-clone-2de2b.appspot.com/o/users%2Fuser_2ciZaSDYBHaCi49X89L0Gr2MX1i%2Ffiles%2F8kLJySnU7qSpKqey71bc?alt=media&token=8733a69d-9117-43a1-8db2-d4a84390c6c2)
+- ### Using script file
+
+  - [Download script file](https://firebasestorage.googleapis.com/v0/b/dropbox-clone-2de2b.appspot.com/o/users%2Fuser_2ciZaSDYBHaCi49X89L0Gr2MX1i%2Ffiles%2F8kLJySnU7qSpKqey71bc?alt=media&token=8733a69d-9117-43a1-8db2-d4a84390c6c2)
+  - Give file permission to execute
+
+    `$ chmod +x script.sh`
+
+  - Run the file
+
+    `$ ./script.sh`
 
 ### :package: Commands
 
@@ -131,6 +136,7 @@ To develop and contribute to this project, make sure you have the following tool
 - `json-c` library for JSON parsing
 - `libcurl` library for make http request
 - `ncurses` library to move the cursor, create windows, produce colors, play with mouse etc
+- `nodejs` only if you are running it locally
 
 ### :package: Installation of Required Libraries
 
@@ -160,7 +166,7 @@ sudo pacman -S curl json-c ncurses
 To set up the development environment:
 
 1. Clone the project repository.
-2. Ensure all dependencies (`json-c` , `libcurl`) are installed.
+2. Ensure all dependencies (`json-c` , `libcurl`, `ncurses`) are installed.
 3. Ensure all environment variable for server is set.
 4. Compile the project using the `make` command.
 

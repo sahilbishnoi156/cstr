@@ -5,11 +5,9 @@
 #include <commands.h>
 #include <curl/curl.h>
 #include <unistd.h>
+#include "utils.h"
 
 #define MAX_LINE_LENGTH 1024
-
-const char *DATA_FILE_NAME = "./data/commands.json";
-const char *HISTORY_FILE = "/.bash_history";
 
 // Define a function to get input from the user for a string field
 char *get_string_input(const char *prompt, const char *default_value, bool required)
@@ -193,13 +191,11 @@ void add_command_locally(json_object *command_input)
     // Create command object from user input
     json_object *command = command_input ? command_input : create_command_object("", "", NULL, 1, "", 0, "shell", NULL);
 
-    // Path to the JSON file containing all commands
-
     // Read the existing JSON file
-    FILE *file = fopen(DATA_FILE_NAME, "r");
+    FILE *file = fopen(COMMANDS_DATA, "r");
     if (!file)
     {
-        fprintf(stderr, "Failed to open file: %s\n", DATA_FILE_NAME);
+        fprintf(stderr, "Failed to open file: %s\n", COMMANDS_DATA);
         json_object_put(command);
         return;
     }
@@ -234,10 +230,10 @@ void add_command_locally(json_object *command_input)
     json_object_array_add(commands_array, command);
 
     // Write the updated JSON array back to the file
-    file = fopen(DATA_FILE_NAME, "w");
+    file = fopen(COMMANDS_DATA, "w");
     if (!file)
     {
-        fprintf(stderr, "Failed to open file: %s\n", DATA_FILE_NAME);
+        fprintf(stderr, "Failed to open file: %s\n", COMMANDS_DATA);
         json_object_put(commands_array);
         return;
     }
@@ -394,15 +390,11 @@ void add_commands_from_history(char *limit_string)
 
 char **get_lines_from_history_file(int limit)
 {
-    // Open the history file
-    char history_file_path[256];
-    snprintf(history_file_path, sizeof(history_file_path), "%s/%s", getenv("HOME"), HISTORY_FILE);
-
     // opening history file
-    FILE *file = fopen(history_file_path, "r");
+    FILE *file = fopen(BASH_HISTORY, "r");
     if (file == NULL)
     {
-        printf("Could not open %s file \n", history_file_path);
+        printf("Could not open %s file \n", BASH_HISTORY);
         exit(EXIT_FAILURE);
     }
 

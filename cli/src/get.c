@@ -3,13 +3,11 @@
 #include <stdlib.h>
 #include <curl/curl.h>
 #include "auth.h"
+#include "utils.h"
 #include "get.h"
 #include "commands.h"
 #include <json-c/json.h>
 #include <string.h>
-
-const int NUM_OPTIONS = 6;
-const char *options[] = {"All", "label", "source", "tags", "aliases", "working_directory"};
 
 // Function to display the menu and handle user input
 const char *select_option_to_get_command(const char *options[], const int num_options, const char *prompt)
@@ -190,6 +188,11 @@ void get_all_user_commands(const char *url)
 
         // Set Authorization header with creator token
         char *token = get_token();
+        if (!token)
+        {
+            printf("Token not found\n");
+            exit(EXIT_FAILURE);
+        }
         char auth_header[256];
         snprintf(auth_header, sizeof(auth_header), "authToken:%s", token);
 
@@ -225,14 +228,14 @@ void get_all_user_commands(const char *url)
 void get_commands()
 {
 
-    const char *selected_option = select_option_to_get_command(options, NUM_OPTIONS, "Get command by:-");
+    const char *selected_option = select_option_to_get_command(OPTIONS_FOR_SEARCH_ACTION, NUM_OPTIONS_FOR_SEARCH_ACTION, "Get command by:-");
 
     if (strcmp(selected_option, "All") == 0)
     {
         char *verification = get_string_input("You can only get 10 commands in terminal. To get all use \"fetch\" action and check commands.json file. Or visit our website.\nDo you want to continue? (y/n)", "n", false);
         if (strcmp(verification, "y") == 0 || strcmp(verification, "Y") == 0)
         {
-            get_all_user_commands("http://localhost:3000/api/command/getcommands?limit=10");
+            get_all_user_commands(GET_ALL_COMMANDS_LIMIT);
             exit(EXIT_SUCCESS);
         }
         else
@@ -257,7 +260,6 @@ void get_commands()
     }
 
     // create data to make api call
-    const char *url = "http://localhost:3000/api/command/getbyfield";
     char *token = get_token();
     if (!token)
     {
@@ -269,5 +271,5 @@ void get_commands()
     snprintf(data, sizeof(data), "{\"key\" : \"%s\", \"value\" : \"%s\"}", selected_option, input);
 
     // make a post api call
-    curl_to_get_command(url, data, token);
+    curl_to_get_command(GET_COMMANDS_BY_FIELD, data, token);
 }

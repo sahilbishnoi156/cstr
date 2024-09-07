@@ -13,9 +13,6 @@ typedef struct Line
     struct Line *next;
 } Line;
 
-// Constants
-extern const char *DATA_FILE_NAME;
-
 // create json object of command and take input
 json_object *create_command_object(
     char label_input[],

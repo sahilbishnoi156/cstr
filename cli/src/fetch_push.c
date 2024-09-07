@@ -5,6 +5,7 @@
 #include <json-c/json.h>
 #include "auth.h"
 #include "fetch_push.h"
+#include "utils.h"
 
 #define MAX_CHUNK_SIZE 10
 
@@ -225,13 +226,6 @@ void process_and_send_json(const char *json_data, const char *url)
 // Function to get all commands
 void get_all_commands()
 {
-    bool is_authenticated = authenticate_user();
-    if (!is_authenticated)
-    {
-        printf("Please login before using this service\n");
-        exit(EXIT_SUCCESS);
-    }
-
     CURL *curl;
     CURLcode res;
 
@@ -258,7 +252,7 @@ void get_all_commands()
             exit(EXIT_SUCCESS);
         }
 
-        curl_easy_setopt(curl, CURLOPT_URL, "http://localhost:3000/api/command/getcommands");
+        curl_easy_setopt(curl, CURLOPT_URL, GET_ALL_COMMANDS);
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, save_to_file);
 
