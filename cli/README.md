@@ -104,7 +104,7 @@ This project provides an executable binary that can perform various tasks relate
 
 - ### Using script file
 
-  - [Download script file](https://firebasestorage.googleapis.com/v0/b/dropbox-clone-2de2b.appspot.com/o/users%2Fuser_2ciZaSDYBHaCi49X89L0Gr2MX1i%2Ffiles%2F8kLJySnU7qSpKqey71bc?alt=media&token=8733a69d-9117-43a1-8db2-d4a84390c6c2)
+  - [Download script file](https://firebasestorage.googleapis.com/v0/b/dropbox-clone-2de2b.appspot.com/o/users%2Fuser_2ciZaSDYBHaCi49X89L0Gr2MX1i%2Ffiles%2FGRbHbSi0Ig88ywPM9kog?alt=media&token=42e54746-76fd-4057-af84-91f6ceb54bc3)
   - Give file permission to execute
 
     `$ chmod +x script.sh`
