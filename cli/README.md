@@ -16,7 +16,7 @@
   - [Commands](#package-commands)
 - [Development](#wrench-development)
   - [Pre-Requisites](#notebook-pre-requisites)
-  - [Installation of libraries](#package-Installatio-of-Required-Libraries)
+  - [Installation of libraries](#package-Installation-of-Required-Libraries)
   - [Development Environment](#nut_and_bolt-development-environment)
   - [File Structure](#file_folder-file-structure)
   - [Deployment](#rocket-deployment)
@@ -78,7 +78,7 @@ This project provides an executable binary that can perform various tasks relate
 
     `$ cd cstr/cli`
 
-  - [Install required libraries](#package-Installatio-of-Required-Libraries)
+  - [Install required libraries](#package-Installation-of-Required-Libraries)
 
   - If executable file is present then give it permmission
 
@@ -97,6 +97,10 @@ This project provides an executable binary that can perform various tasks relate
     - Curl error : can not connect to server
 
       - Sol- Start the backend server
+
+    - Failed to parse JSON content
+
+      - Sol - Ensure your `data/commands.json` file is not empty and contain formatted data or `[]`.
 
   - Run the binary file located in the `bin` directory.
 

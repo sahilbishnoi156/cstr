@@ -42,15 +42,27 @@ int main(int argc, char *argv[])
     {
         login();
     }
-    else if (strcmp(action, "get") == 0)
+    else if (strcmp(action, "get") == 0 && argc == 2)
     {
-        get_commands();
+        printf("This action search commands from global database only.");
+        printf("Please use \"push\" action beforehand if you are trying to search local command. It will sync the databases\n");
+        printf("Do you still want to continue? (Y/N) : ");
+        char input;
+        scanf("%c", &input);
+        if (input == 'y' || input == 'Y' || input == '\n')
+        {
+            get_commands();
+        }
+        else
+        {
+            printf("Action cancelled\n");
+        }
     }
     else if (strcmp(action, "fetch") == 0 && argc == 2)
     {
         char input;
         printf("All the local commands will be lost after this action. ");
-        printf("Please use \"push\" action beforehead to confirm if any unstaged commands exists.\n");
+        printf("Please use \"push\" action beforehand to confirm if any unstaged commands exists.\n");
         printf("Do you still want to continue? (Y/N) : ");
         scanf("%c", &input);
         if (input == 'y' || input == 'Y')

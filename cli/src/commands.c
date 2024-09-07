@@ -344,9 +344,9 @@ void add_commands_from_history(char *limit_string)
     int limit_int = strtol(limit_string, &endptr, 10);
 
     // If the input is not a valid integer, print an error message and retry
-    if (endptr == limit_string || *endptr != '\0')
+    if (endptr == limit_string || *endptr != '\0' || limit_int > 10)
     {
-        printf("Invalid attribute \"%s\"\n", limit_string);
+        printf("Invalid attribute \"%s\". Please enter a valid number\n", limit_string);
         exit(EXIT_FAILURE);
     }
 
