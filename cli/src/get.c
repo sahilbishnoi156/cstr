@@ -232,7 +232,7 @@ void get_commands()
 
     // flush stdin buffer
     int c;
-    while ((c == getchar()) != '\n' && c != EOF)
+    while ((c = getchar()) != '\n' && c != EOF)
         ;
 
     if (strcmp(selected_option, "All") == 0)
