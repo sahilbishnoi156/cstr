@@ -1,8 +1,12 @@
-<img src="https://readme.so/readme.svg" alt="Command Management" width="40" style="position:relative; top:10;"/> <span style="font-size:30"> Cstr - command store</span>
+<img src="https://readme.so/readme.svg" alt="Command Management" width="40" style="position:relative; top:10px;"/> <span style="font-size:30px"> Cstr - command store</span>
 
 ## About
 
 `cstr` is a command-line tool built in C that helps users manage shell command history. It allows you to add, search, and synchronize commands with a remote service. Commands can be stored locally or fetched from a cloud-based database.
+
+# \*\*\*Important\*\*\*
+
+**This tool is only built for linux environment at least for now. So it is strongly recommended do not use this in windows or mac or you might loose you system files.**
 
 ## 📒 Index
 
@@ -12,6 +16,7 @@
   - [Commands](#package-commands)
 - [Development](#wrench-development)
   - [Pre-Requisites](#notebook-pre-requisites)
+  - [Installation of libraries](#package-Installatio-of-Required-Libraries)
   - [Development Environment](#nut_and_bolt-development-environment)
   - [File Structure](#file_folder-file-structure)
   - [Deployment](#rocket-deployment)
@@ -57,6 +62,14 @@ This project provides an executable binary that can perform various tasks relate
 
       `$ cd cstr/server`
 
+    - Install dependencies
+
+      `$ npm i`
+
+    - Setup environment variables
+
+      `$ vim cstr/server/.env`
+
     - Start the server
 
       `$ npm run start`
@@ -65,13 +78,29 @@ This project provides an executable binary that can perform various tasks relate
 
     `$ cd cstr/cli`
 
+  - [Install required libraries](#package-Installatio-of-Required-Libraries)
+
+  - If executable file is present then give it permmission
+
+    `$ chmod +x cstr/cli/bin/cstr`
+
   - Compile the code and generate executable file
 
     `$ gcc -Iinclude -Wall -o bin/cstr src/main.c src/commands.c src/auth.c src/utils.c src/fetch_push.c src/get.c -lcurl -ljson-c -lncurses`
 
-  4. Run the binary file located in the `bin` directory.
+  - ### Getting errors ?
 
-     `$ ./bin/cstr <actions>`
+    - `json-c/json.h` / `curl/curl.h` / `ncurses.h` : No such file or directory
+
+      - Sol- Ensure that all the needed libraries are installed.
+
+    - Curl error : can not connect to server
+
+      - Sol- Start the backend server
+
+  - Run the binary file located in the `bin` directory.
+
+    `$ ./bin/cstr <actions>`
 
 ### :package: Commands
 
@@ -97,13 +126,36 @@ To develop and contribute to this project, make sure you have the following tool
 - `libcurl` library for make http request
 - `ncurses` library to move the cursor, create windows, produce colors, play with mouse etc
 
+### :package: Installation of Required Libraries
+
+To run this project, you'll need to install the following libraries: `libcurl`, `json-c`, and `ncurses`. Use the appropriate commands based on your Linux distribution:
+
+#### For Ubuntu/Debian-based distributions:
+
+```bash
+sudo apt update
+sudo apt install libcurl4-openssl-dev libjson-c-dev libncurses5-dev libncursesw5-dev
+```
+
+#### For Fedora-based distributions:
+
+```bash
+sudo dnf install libcurl-devel json-c-devel ncurses-devel
+```
+
+#### For Arch-based distributions:
+
+```bash
+sudo pacman -S curl json-c ncurses
+```
+
 ### :nut_and_bolt: Development Environment
 
 To set up the development environment:
 
 1. Clone the project repository.
 2. Ensure all dependencies (`json-c` , `libcurl`) are installed.
-3.
+3. Ensure all environment variable for server is set.
 4. Compile the project using the `make` command.
 
 ### :file_folder: File Structure
