@@ -12,7 +12,7 @@
 
 - [Usage](#zap-usage)
   - [Overview](#beginner-overview)
-  - [Installation](#electric_plug-installation)
+  - [Installation](#electric_plug-installation-/-Build-/-Setup)
   - [Commands](#package-commands)
 - [Development](#wrench-development)
   - [Pre-Requisites](#notebook-pre-requisites)
@@ -48,7 +48,7 @@ This project provides an executable binary that can perform various tasks relate
 - Fetch data from the cloud service: `./bin/cstr fetch`
 - Push local changes to the cloud: `./bin/cstr push`
 
-### :electric_plug: Installation / Build / Setup
+### :electric_plug: Installation/Build/Setup
 
 - ### Run locally
 

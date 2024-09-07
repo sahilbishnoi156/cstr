@@ -8,7 +8,7 @@
 #include "auth.h"
 
 // constants
-const char *BACKEND_URI = "http://localhost:3000/api";
+const char *BACKEND_URI = "https://cstr.onrender.com/api";
 const char *PARENT_DIRECTORY;
 char ENV[1024];
 char COMMANDS_DATA[256];

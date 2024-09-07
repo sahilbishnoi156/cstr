@@ -43,12 +43,12 @@ const char *select_option_to_get_command(const char *options[], const int num_op
             {
                 // Highlight the selected option
                 attron(A_REVERSE);
-                mvprintw(start_y + 6 + i, start_x, options[i]);
+                mvprintw(start_y + 6 + i, start_x, "%s", options[i]);
                 attroff(A_REVERSE);
             }
             else
             {
-                mvprintw(start_y + 6 + i, start_x, options[i]);
+                mvprintw(start_y + 6 + i, start_x, "%s", options[i]);
             }
         }
 
@@ -229,6 +229,11 @@ void get_commands()
 {
 
     const char *selected_option = select_option_to_get_command(OPTIONS_FOR_SEARCH_ACTION, NUM_OPTIONS_FOR_SEARCH_ACTION, "Get command by:-");
+
+    // flush stdin buffer
+    int c;
+    while ((c == getchar()) != '\n' && c != EOF)
+        ;
 
     if (strcmp(selected_option, "All") == 0)
     {

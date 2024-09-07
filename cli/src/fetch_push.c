@@ -12,7 +12,7 @@
 // Function to read the commands.json file
 void update_json_data()
 {
-    FILE *file = fopen("./data/commands.json", "r+"); // Open in read/write mode
+    FILE *file = fopen(COMMANDS_DATA, "r+"); // Open in read/write mode
     if (!file)
     {
         perror("Error opening file\n");
@@ -54,7 +54,7 @@ void update_json_data()
 // Function to read the commands.json file
 char *read_json_file()
 {
-    FILE *file = fopen("./data/commands.json", "r");
+    FILE *file = fopen(COMMANDS_DATA, "r");
     if (!file)
     {
         perror("Error opening file\n");
@@ -290,7 +290,7 @@ size_t save_to_file(char *ptr, size_t size, size_t nmemb, void *stream)
         if (data_obj != NULL)
         {
             // Open the file for writing
-            FILE *fp = fopen("./data/commands.json", "w");
+            FILE *fp = fopen(COMMANDS_DATA, "w");
             if (!fp)
             {
                 perror("Error: Failed to open commands file locally\n");
