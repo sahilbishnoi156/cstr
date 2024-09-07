@@ -1,4 +1,4 @@
-<img src="https://readme.so/readme.svg" alt="Command Management" width="40" style="position:relative; top:10;"/> <span style="font-size:30"> Cstr - command store</span>
+<img src="https://readme.so/readme.svg" alt="Command Management" width="40" style="position:relative; top:10px;"/> <span style="font-size:30px"> Cstr - command store</span>
 
 ## About
 
