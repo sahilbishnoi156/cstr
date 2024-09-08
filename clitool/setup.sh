@@ -73,4 +73,12 @@ gcc -Iinclude -o bin/cstr src/main.c -L. lib/cstrlibrary.a -lncurses -ljson-c -l
 # Create a symbolic link for the executable
 sudo ln -sf "$CSTR_DIR/clitool/bin/cstr" /usr/local/bin/cstr
 
+# creating manual for command
+echo "Installing manual page"
+sudo cp "$CSTR_DIR/clitool/man/cstr.1" /usr/share/man/man1/
+
+# updating manul page
+echo "Updating the Manual Page Database"
+sudo mandb
+
 echo "Setup complete. The 'cstr' executable is available globally."

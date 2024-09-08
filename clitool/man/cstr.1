@@ -1,0 +1,53 @@
+.TH CSTR 1 "September 2024" "1.0" "CSTR Command Manual"
+.SH NAME
+cstr \- command-line tool for managing shell command history
+.SH SYNOPSIS
+.B cstr
+.RI [ add ]
+.RI [ add \fIlimit\fR ]
+.RI [ man ]
+.RI [ login ]
+.RI [ get ]
+.RI [ fetch ]
+.RI [ push ]
+.SH DESCRIPTION
+The CSTR Command Tool provides a range of commands to manage and interact with your shell commands.
+.SH COMMANDS
+.TP
+.B add
+Add a new command.
+.TP
+.B add \fIlimit\fR
+Add commands from history with a specified limit (e.g., add 10).
+.TP
+.B man
+Display this manual.
+.TP
+.B login
+Log in to the cloud service to access global files.
+.TP
+.B get
+Fetch commands based on criteria:
+.IP
+.B get all
+Retrieve all commands (default limit is 10).
+.IP
+.B get source \fIsource_name\fR
+Search by command source.
+.IP
+.B get directory \fIdirectory\fR
+Search by working directory.
+.IP
+.B get tags \fItag_name\fR
+Search by tags.
+.IP
+.B get aliases \fIalias_name\fR
+Search by command aliases.
+.TP
+.B fetch
+Retrieve the latest command data from the cloud service.
+.TP
+.B push
+Push local command data to the cloud service.
+.SH AUTHOR
+Developed by [@sahilbishnoi](https://github.com/sahilbishnoi156)
