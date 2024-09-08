@@ -65,11 +65,11 @@ gcc -c $SRC_DIR/utils.c -o $OBJ_DIR/utils.o -I $INCLUDE_DIR
 
 # Create a static library from the object files
 echo "Creating static libraries..."
-ar rcs $LIB_DIR/cstrtool.a $OBJ_DIR/auth.o $OBJ_DIR/commands.o $OBJ_DIR/fetch_push.o $OBJ_DIR/get.o $OBJ_DIR/utils.o
-ar rcs $TOOL_LIB_DIR/cstrtool.a $OBJ_DIR/auth.o $OBJ_DIR/commands.o $OBJ_DIR/fetch_push.o $OBJ_DIR/get.o $OBJ_DIR/utils.o
+ar rcs $LIB_DIR/cstrlibrary.a $OBJ_DIR/auth.o $OBJ_DIR/commands.o $OBJ_DIR/fetch_push.o $OBJ_DIR/get.o $OBJ_DIR/utils.o
+ar rcs $TOOL_LIB_DIR/cstrlibrary.a $OBJ_DIR/auth.o $OBJ_DIR/commands.o $OBJ_DIR/fetch_push.o $OBJ_DIR/get.o $OBJ_DIR/utils.o
 
 # Compile main.c and link with the static library to create the final executable
 echo "Building the executable..."
-gcc $SRC_DIR/main.c -o $BIN_DIR/cstr -I $INCLUDE_DIR -L. $LIB_DIR/cstrtool.a -lncurses -lcurl -ljson-c
+gcc $SRC_DIR/main.c -o $BIN_DIR/cstr -I $INCLUDE_DIR -L. $LIB_DIR/cstrlibrary.a -lncurses -lcurl -ljson-c
 
 echo "Build complete!"
