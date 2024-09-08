@@ -12,7 +12,7 @@
 
 - [Usage](#zap-usage)
   - [Overview](#beginner-overview)
-  - [Installation](#electric_plug-installation-/-Build-/-Setup)
+  - [Installation](#electric_plug-installationbuildsetup)
   - [Commands](#package-commands)
 - [Development](#wrench-development)
   - [Pre-Requisites](#notebook-pre-requisites)
@@ -78,52 +78,84 @@ This project provides an executable binary that can perform various tasks relate
 
     `$ cd cstr/cli`
 
-  - [Install required libraries](#package-Installation-of-Required-Libraries)
+  - ### Build using script
 
-  - Compile the code and generate executable file
+    - Run build script (it will install the required libraries, build the library, generate the executable file)
 
-    `$ gcc -Iinclude -Wall -o bin/cstr src/main.c src/commands.c src/auth.c src/utils.c src/fetch_push.c src/get.c -lcurl -ljson-c -lncurses`
+      `$ ./scripts/build-library.sh`
 
-  - ### Getting errors ?
+    - Run the executable file
 
-    - `json-c/json.h` / `curl/curl.h` / `ncurses.h` : No such file or directory
+      `$ ./bin/cstr <action>`
 
-      - Sol- Ensure that all the needed libraries are installed.
+  - ### Compile using script
 
-    - Curl error : can not connect to server
+    - [Install required libraries](#package-Installation-of-Required-Libraries)
 
-      - Sol- Start the backend server
+    - Run compile script
 
-    - Failed to parse JSON content
+      `$ ./scripts/compile.sh`
 
-      - Sol - Ensure your `data/commands.json` file is not empty and contain formatted data or `[]`.
+    - Run the executable file
 
-  - Run the binary file located in the `bin` directory.
+      `$ ./bin/cstr <action>`
 
-    `$ ./bin/cstr <actions>`
+  - ### Compile manually
 
-- ### Using script file
+    - Compile all .c files
 
-  - [Download script file](https://firebasestorage.googleapis.com/v0/b/dropbox-clone-2de2b.appspot.com/o/users%2Fuser_2ciZaSDYBHaCi49X89L0Gr2MX1i%2Ffiles%2FGRbHbSi0Ig88ywPM9kog?alt=media&token=42e54746-76fd-4057-af84-91f6ceb54bc3)
+      `$ gcc -Iinclude -Wall -o bin/cstr src/main.c src/commands.c src/auth.c src/utils.c src/fetch_push.c src/get.c -lcurl -ljson-c -lncurses`
+
+    - Compile with library (you must run `build-library.sh` script before)
+
+      `$ gcc -Iinclude -o bin/cstr src/main.c -L. lib/cstrlibrary.a -lncurses -ljson-c -lcurl`
+
+- Create symbolic link for your executable file
+
+  `$ ln -sf "$HOME/cstr/clitool/bin/cstr" /usr/local/bin/cstr`
+
+- ## Getting errors ?
+
+  - `json-c/json.h` / `curl/curl.h` / `ncurses.h` : No such file or directory
+
+    - Sol- Ensure that all the needed libraries are installed.
+
+  - Curl error : can not connect to server
+
+    - Sol- Start the backend server
+
+  - Failed to parse JSON content
+
+    - Sol - Ensure your `data/commands.json` file is not empty and contain formatted data or `[]`.
+
+- ### Using cstr clitool
+
+  - [Download script file](https://firebasestorage.googleapis.com/v0/b/dropbox-clone-2de2b.appspot.com/o/users%2Fuser_2ciZaSDYBHaCi49X89L0Gr2MX1i%2Ffiles%2F7DJdGwwmIRV2vjSFrQtN?alt=media&token=f2464453-672d-46e9-a50b-5982074df7ac)
   - Give file permission to execute
 
     `$ chmod +x script.sh`
 
-  - Run the file
+  - Run the file : this will install the tool on your system
 
     `$ ./script.sh`
+
+  - use the tool
+
+    `$ cstr <action>`
 
 ### :package: Commands
 
 To execute the program, use the following commands:
 
-- `./bin/cstr add`: Adds a new command locally.
-- `./bin/cstr add <limit>`: Adds commands from the history with a specified limit.
-- `./bin/cstr man`: Shows the manual for the tool.
-- `./bin/cstr login`: Logs in to the cloud service.
-- `./bin/cstr get`: Fetches commands based on criteria (source, directory, tags, alias).
-- `./bin/cstr fetch`: Fetches the latest command data from the cloud.
-- `./bin/cstr push`: Pushes local command data to the cloud.
+#### use `cstr` if using clitool or `./bin/cstr` if running locally
+
+- `cstr add`: Adds a new command locally.
+- `cstr add <limit>`: Adds commands from the history with a specified limit.
+- `cstr man`: Shows the manual for the tool.
+- `cstr login`: Logs in to the cloud service.
+- `cstr get`: Fetches commands based on criteria (source, directory, tags, alias).
+- `cstr fetch`: Fetches the latest command data from the cloud.
+- `cstr push`: Pushes local command data to the cloud.
 
 ## :wrench: Development
 

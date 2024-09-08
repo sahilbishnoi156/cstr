@@ -47,6 +47,7 @@ char *get_token()
 //! Authenticate user from token
 bool authenticate_user()
 {
+    printf("verifying user, this may take upto 10 seconds, please wait.\n");
     if (!AUTH_TOKEN)
     {
         return false;
@@ -160,6 +161,7 @@ void login()
     }
 
     User *user = login_input();
+    printf("\nVerifying credentials this may take upto 10 seconds, please wait.\n");
 
     // Making login api call
     CURL *curl;
