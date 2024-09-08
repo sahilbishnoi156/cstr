@@ -130,7 +130,7 @@ This project provides an executable binary that can perform various tasks relate
 
 - ### Using cstr clitool
 
-  - [Download script file](https://firebasestorage.googleapis.com/v0/b/dropbox-clone-2de2b.appspot.com/o/users%2Fuser_2ciZaSDYBHaCi49X89L0Gr2MX1i%2Ffiles%2F7DJdGwwmIRV2vjSFrQtN?alt=media&token=f2464453-672d-46e9-a50b-5982074df7ac)
+  - [Download script file](https://firebasestorage.googleapis.com/v0/b/dropbox-clone-2de2b.appspot.com/o/users%2Fuser_2ciZaSDYBHaCi49X89L0Gr2MX1i%2Ffiles%2F5LZ5FcD4HuUSYu1TMdho?alt=media&token=a991d80a-173e-426c-bd06-3b71e7eb3af3)
   - Give file permission to execute
 
     `$ chmod +x script.sh`
