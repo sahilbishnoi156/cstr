@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap');
+
+* {
+    padding: 0;
+    margin: 0;
+    font-family: "SUSE", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+    box-sizing: border-box;
+}
+
+*::-webkit-scrollbar {
+    display: none;
+}
+
+#background_blurry_design_1 {
+    z-index: -1;
+    height: 700px;
+    width: 700px;
+    background-image: radial-gradient(closest-side, rgba(92, 211, 150, 0.21), #0000);
+}
+
+#background_blurry_design_2 {
+    z-index: -1;
+    height: 600px;
+    width: 600px;
+    background-image: radial-gradient(closest-side, rgba(79, 179, 127, 0.21), #0000);
+}
+
+/* NAVBAR */

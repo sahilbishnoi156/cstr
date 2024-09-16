@@ -50,7 +50,7 @@ void initialize_environment()
     // Get the directory name from the executable path (removes the last part, i.e., 'bin')
     char *exe_dir = dirname(exe_path);
 
-    exe_dir[strlen(exe_dir) - 4] = '\0';
+    exe_dir[strlen(exe_dir) - 4] = '\0'; // -4 to remove the "/bin" from path
 
     // Now exe_dir contains the path without 'bin'
     PARENT_DIRECTORY = exe_dir;

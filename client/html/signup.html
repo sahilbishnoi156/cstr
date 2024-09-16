@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../styles/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>CSTR Signup</title>
+</head>
+
+<body class="min-h-screen w-full overflow-hidden bg-[#151414] flex items-center justify-center px-4 sm:px-6 lg:px-8">
+    <div id="background_blurry_design_1"
+        class="absolute -right-64 -top-24 w-96 h-96 bg-[#23423c] rounded-full filter blur-3xl opacity-20"></div>
+    <div id="background_blurry_design_2"
+        class="absolute -left-56 -bottom-32 w-96 h-96 bg-[#23423c] rounded-full filter blur-3xl opacity-20"></div>
+
+    <div class="w-full max-w-md z-10">
+        <div class="bg-[#23423c] bg-opacity-20 backdrop-blur-lg rounded-lg px-8 py-10 shadow-lg">
+            <div class="text-2xl flex items-center justify-center gap-2 text-white mb-8">
+                <img src="../assets/logo.svg" alt="cstr_logo" class="h-8">
+                <span>Signup</span>
+            </div>
+            <form id="signup-form" class="space-y-6">
+                <div>
+                    <label for="fullName" class="block text-sm font-medium text-gray-300">
+                        Full Name
+                    </label>
+                    <div class="mt-1">
+                        <input id="fullName" name="fullName" type="text" required
+                            class="bg-[#23423c] appearance-none rounded-full relative block w-full px-4 py-2 border border-gray-600 placeholder-gray-500 text-white focus:outline-none focus:ring-[#087452] focus:border-[#087452] focus:z-10 sm:text-sm"
+                            placeholder="John Doe">
+                    </div>
+                </div>
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-300">
+                        Email address
+                    </label>
+                    <div class="mt-1">
+                        <input id="email" name="email" type="email" autocomplete="email" required
+                            class="bg-[#23423c] appearance-none rounded-full relative block w-full px-4 py-2 border border-gray-600 placeholder-gray-500 text-white focus:outline-none focus:ring-[#087452] focus:border-[#087452] focus:z-10 sm:text-sm"
+                            placeholder="you@example.com">
+                    </div>
+                </div>
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-300">
+                        Password
+                    </label>
+                    <div class="mt-1">
+                        <input id="password" name="password" type="password" autocomplete="new-password" required
+                            class="bg-[#23423c] appearance-none rounded-full relative block w-full px-4 py-2 border border-gray-600 placeholder-gray-500 text-white focus:outline-none focus:ring-[#087452] focus:border-[#087452] focus:z-10 sm:text-sm"
+                            placeholder="••••••••">
+                    </div>
+                </div>
+                <div>
+                    <label for="confirmPassword" class="block text-sm font-medium text-gray-300">
+                        Confirm Password
+                    </label>
+                    <div class="mt-1">
+                        <input id="confirmPassword" name="confirmPassword" type="password" autocomplete="new-password"
+                            required
+                            class="bg-[#23423c] appearance-none rounded-full relative block w-full px-4 py-2 border border-gray-600 placeholder-gray-500 text-white focus:outline-none focus:ring-[#087452] focus:border-[#087452] focus:z-10 sm:text-sm"
+                            placeholder="••••••••">
+                    </div>
+                </div>
+                <div>
+                    <button type="submit"
+                        class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-full text-white bg-[#087452] hover:bg-[#0a9e6e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#087452] transition duration-150 ease-in-out">
+                        Sign up
+                    </button>
+                </div>
+            </form>
+            <p class="mt-6 text-center text-sm text-gray-300">
+                Already have an account?
+                <a href="login.html" class="font-medium text-[#087452] hover:text-[#0a9e6e]">
+                    Log in
+                </a>
+            </p>
+        </div>
+    </div>
+    <script src="../scripts/signUp/signUp.js"></script>
+</body>
+
+</html>
