@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../styles/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>404 - Page Not Found</title>
+</head>
+
+<body class="h-screen w-screen bg-[#151414] flex items-center justify-center relative overflow-hidden">
+    <!-- Background blurry designs -->
+    <div id="background_blurry_design_1"
+        class="absolute -right-64 -top-24 w-72 h-72 md:w-96 md:h-96 bg-[#23423c] rounded-full filter blur-3xl opacity-20">
+    </div>
+    <div id="background_blurry_design_2"
+        class="absolute -left-56 -bottom-32 w-72 h-72 md:w-96 md:h-96 bg-[#23423c] rounded-full filter blur-3xl opacity-20">
+    </div>
+
+    <!-- Main content -->
+    <div class="z-10 text-center px-4">
+        <a href="/html"
+            class="absolute top-6 left-6 flex gap-4 sm:gap-8 lg:gap-16 text-white items-center justify-between flex-wrap"
+            id="public_nav">
+            <div class="text-xl flex items-center justify-center gap-2">
+                <img src="../assets/logo.svg" alt="cstr_logo" class="h-6 sm:h-8">
+                <span>Cstr</span>
+            </div>
+        </a>
+        <h1 class="text-6xl md:text-8xl font-bold text-gray-100 mb-4 text-red-500">OOPS!!!!</h1>
+        <h3 class="text-2xl md:text-3xl text-gray-100 mb-4" id="error_message">Something went wrong</h3>
+        <p class="text-lg md:text-xl text-gray-400 mb-8">Oops! It seems like you've ventured into uncharted territory.
+        </p>
+        <a href="#"
+            class="inline-flex items-center justify-center px-6 py-3 bg-[#087452] text-white font-bold rounded-full hover:bg-[#0a9e6e] transition-colors duration-300"
+            id="backButton">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            Back to Homepage
+        </a>
+    </div>
+
+    <script>
+        document.getElementById('backButton').addEventListener('click', function (e) {
+            e.preventDefault();
+            localStorage.clear();
+            sessionStorage.clear();
+            window.history.back();
+        });
+        document.getElementById('error_message').innerText = localStorage.getItem('error') || "Something went wrong";
+    </script>
+</body>
+
+</html>

@@ -12,16 +12,17 @@
     <title>CSTR</title>
 </head>
 
-<body class="h-screen w-full overflow-hidden bg-[#151414]">
+<body class="h-screen w-full overflow-hidden bg-[#151414] text-white">
     <div id="background_blurry_design_1"
-        class="absolute -right-64 -top-24 w-96 h-96 bg-[#23423c] rounded-full filter blur-3xl opacity-20"></div>
+        class="fixed -right-64 -top-24 w-96 h-96 bg-[#23423c] rounded-full filter blur-3xl opacity-20"></div>
     <div id="background_blurry_design_2"
-        class="absolute -left-56 -bottom-32 w-96 h-96 bg-[#23423c] rounded-full filter blur-3xl opacity-20"></div>
+        class="fixed -left-56 -bottom-32 w-96 h-96 bg-[#23423c] rounded-full filter blur-3xl opacity-20"></div>
+    <div id="toast"></div>
     <div class="h-full p-4 sm:p-6 flex flex-col gap-4 sm:gap-8 z-10 relative" id="main_div">
         <header class="flex-shrink-0">
-            <nav class="w-full hidden gap-4 sm:gap-8 lg:gap-16 text-white items-center justify-between flex-wrap"
+            <nav class="w-full hidden sm:flex gap-4 sm:gap-8 lg:gap-16 items-center justify-between flex-wrap"
                 id="private_nav">
-                <div class="text-xl flex items-center justify-center gap-2">
+                <div class="text-2xl flex items-center justify-center gap-1">
                     <img src="../assets/logo.svg" alt="cstr_logo" class="h-6 sm:h-8">
                     <span>Cstr</span>
                 </div>
@@ -29,16 +30,16 @@
                     <div class="bg-[#23423c] flex rounded-full gap-4 items-center px-4 py-2 backdrop-blur-3xl">
                         <i class="fa-solid fa-magnifying-glass text-sm"></i>
                         <input type="text" class="bg-transparent border-none outline-none w-full"
-                            placeholder="Search payment" />
+                            placeholder="Search command" />
                     </div>
                 </div>
                 <div class="flex items-center justify-between gap-3 mt-4 sm:mt-0">
-                    <div class="text-base sm:text-xl">Hi Sahil!</div>
-                    <div class="bg-white rounded-full h-6 w-6"></div>
+                    <div class="text-base sm:text-xl" id="current_user_name">Hi Sahil!</div>
+                    <img src="https://static.vecteezy.com/system/resources/previews/004/819/327/original/male-avatar-profile-icon-of-smiling-caucasian-man-vector.jpg"
+                        alt="avatar" class="h-8 rounded-full">
                 </div>
             </nav>
-            <nav class="w-full flex gap-4 sm:gap-8 lg:gap-16 text-white items-center justify-between flex-wrap"
-                id="public_nav">
+            <nav class="w-full flex gap-4 sm:gap-8 lg:gap-16 items-center justify-between flex-wrap" id="public_nav">
                 <div class="text-xl flex items-center justify-center gap-2">
                     <img src="../assets/logo.svg" alt="cstr_logo" class="h-6 sm:h-8">
                     <span>Cstr</span>
@@ -56,37 +57,131 @@
                 <div id="side_bar" class="flex flex-row sm:flex-col justify-between items-center sm:h-full p-4 sm:w-20">
                     <div class="flex flex-row sm:flex-col gap-4">
                         <div class="bg-[#23423c] rounded-full w-fit transition">
-                            <div class="rounded-full flex items-center justify-center h-10 w-10 hover:bg-white group/home duration-150 cursor-pointer sidebar-btn"
-                                data-content="home">
+                            <div class="rounded-full flex items-center justify-center h-10 w-10 active hover:bg-white group/home duration-150 cursor-pointer sidebar-btn"
+                                data-content="home" title="Home">
                                 <i
                                     class="fa-solid fa-house text-white group-hover/home:text-[#087452] duration-150"></i>
                             </div>
                             <div class="rounded-full flex items-center justify-center h-10 w-10 hover:bg-white group/plus duration-150 cursor-pointer sidebar-btn"
-                                data-content="add">
+                                data-content="cli" title="CLI Documentation">
+                                <i
+                                    class="fa-solid fa-hashtag text-white group-hover/plus:text-[#087452] duration-150"></i>
+                            </div>
+                            <div class="rounded-full flex items-center justify-center h-10 w-10 hover:bg-white group/plus duration-150 cursor-pointer sidebar-btn"
+                                data-content="search" title="Search Command">
+                                <i
+                                    class="fa-solid fa-search text-white group-hover/plus:text-[#087452] duration-150"></i>
+                            </div>
+                            <div class="rounded-full flex items-center justify-center h-10 w-10 hover:bg-white group/plus duration-150 cursor-pointer sidebar-btn"
+                                data-content="plus" title="Add Command">
                                 <i class="fa-solid fa-plus text-white group-hover/plus:text-[#087452] duration-150"></i>
                             </div>
                         </div>
                         <div class="bg-[#23423c] rounded-full w-fit ">
-                            <div class="rounded-full flex items-center justify-center h-10 w-10 hover:bg-white group/plus duration-150 cursor-pointer sidebar-btn"
-                                data-content="search">
-                                <i
-                                    class="fa-solid fa-search text-white group-hover/plus:text-[#087452] duration-150"></i>
-                            </div>
                             <div class="rounded-full flex items-center justify-center h-10 w-10 hover:bg-white group/gear duration-150 cursor-pointer sidebar-btn"
-                                data-content="settings">
+                                data-content="settings" title="Settings">
                                 <i class="fa-solid fa-gear text-white group-hover/gear:text-[#087452] duration-150"></i>
                             </div>
                         </div>
                     </div>
                     <div class="mt-4 sm:mt-0">
-                        <i
-                            class="fa-solid fa-arrow-right-from-bracket bg-[#23423c] text-white rounded-full flex items-center justify-center h-10 w-10 hover:bg-white hover:text-[#087452] cursor-pointer hidden private_button"></i>
-                        <i
-                            class="fa-solid fa-right-to-bracket bg-[#23423c] text-white rounded-full flex items-center justify-center h-10 w-10 hover:bg-white hover:text-[#087452] cursor-pointer public_button"></i>
+                        <i class="fa-solid fa-arrow-right-from-bracket bg-[#23423c] text-white rounded-full flex items-center justify-center h-10 w-10 hover:bg-white hover:text-[#087452] cursor-pointer hidden private_button"
+                            id="logout_button" title="logout"></i>
                     </div>
                 </div>
-                <div id="content-area" class=" w-full h-full overflow-y-auto p-6 text-white">
-                    <!-- Content will be dynamically inserted here -->
+                <div id="content-area" class="w-full h-full overflow-y-auto snap-y snap-mandatory">
+                    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <!-- Hero Section -->
+                        <section id="hero"
+                            class="relative min-h-[80vh] flex flex-col justify-center items-center py-12 sm:py-16 snap-start">
+                            <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-center">Manage Commands
+                                Easily with cstr</h1>
+                            <p class="text-base sm:text-lg md:text-xl mb-8 text-center max-w-2xl">
+                                A tool for saving, organizing, and accessing commands via both a web interface and CLI.
+                                Seamlessly manage your frequently used commands, retrieve history, and more!
+                            </p>
+                            <a href="#"
+                                class="bg-[#23423c] cursor-pointer text-white px-5 hover:px-7 duration-150 py-3 rounded-md text-lg font-semibold">
+                                Add Command
+                            </a>
+                            <a href="#about" class=" absolute bottom-4 animate-bounce">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke-linecap="round"
+                                    stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                                </svg>
+                            </a>
+                        </section>
+
+                        <!-- What the Project is About -->
+                        <section id="about"
+                            class="relative min-h-[80vh] flex flex-col justify-center items-center py-12 sm:py-16 snap-start">
+                            <h2 class="text-2xl sm:text-3xl md:text-4xl font-semibold mb-6 text-center">What is CSTR?
+                            </h2>
+                            <p class="text-base sm:text-lg md:text-xl leading-relaxed text-center max-w-2xl">
+                                The <strong>cstr</strong> project provides a versatile platform for saving and managing
+                                shell commands, whether you're working locally on the CLI or prefer the convenience
+                                of a web interface. With <strong>cstr</strong>, you can easily store commands, add
+                                aliases, retrieve command histories, and more, all from one tool.
+                            </p>
+                            <a href="#use-cases" class="absolute bottom-4 animate-bounce">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke-linecap="round"
+                                    stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                                </svg>
+                            </a>
+                        </section>
+
+                        <!-- Use Cases Section -->
+                        <section id="use-cases"
+                            class="relative min-h-[85vh] flex flex-col justify-center items-center py-12 sm:py-16 snap-start">
+                            <h2 class="text-2xl sm:text-3xl md:text-4xl font-semibold mb-6 text-center">Use Cases</h2>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-4xl">
+                                <div class="p-6 bg-[#23423c] rounded-md">
+                                    <h3 class="text-lg sm:text-xl md:text-2xl font-semibold mb-4">Streamline
+                                        Development</h3>
+                                    <p class="text-sm sm:text-base">
+                                        Use <strong>cstr</strong> to manage commands that you frequently run during
+                                        development. Quickly add new commands, retrieve them later, and avoid repetitive
+                                        typing.
+                                    </p>
+                                </div>
+
+                                <div class="p-6 bg-[#23423c] rounded-md">
+                                    <h3 class="text-lg sm:text-xl md:text-2xl font-semibold mb-4">Team Collaboration
+                                    </h3>
+                                    <p class="text-sm sm:text-base">
+                                        Share important commands with your team. Store commands in a central repository
+                                        and allow others to access them, making it easier for team members to run common
+                                        scripts.
+                                    </p>
+                                </div>
+
+                                <div class="p-6 bg-[#23423c] rounded-md">
+                                    <h3 class="text-lg sm:text-xl md:text-2xl font-semibold mb-4">Project Setup
+                                        Automation</h3>
+                                    <p class="text-sm sm:text-base">
+                                        Save commands for setting up projects, such as installing dependencies or
+                                        setting up environments. You can easily push the setup commands to the CLI and
+                                        website for seamless access.
+                                    </p>
+                                </div>
+
+                                <div class="p-6 bg-[#23423c] rounded-md">
+                                    <h3 class="text-lg sm:text-xl md:text-2xl font-semibold mb-4">Data Retrieval</h3>
+                                    <p class="text-sm sm:text-base">
+                                        Retrieve old command histories across projects. <strong>cstr</strong> helps you
+                                        keep track of useful commands and reuse them across different environments.
+                                    </p>
+                                </div>
+                            </div>
+                            <a href="#hero" class="absolute bottom-4 animate-bounce">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke-linecap="round"
+                                    stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+                                </svg>
+                            </a>
+                        </section>
+                    </div>
                 </div>
             </section>
             <section id="public_section" class="flex items-center justify-center h-full w-full">
@@ -94,12 +189,11 @@
                     class="w-full sm:w-3/4 h-full flex items-center justify-center flex-col text-white text-center px-4">
                     <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-[4vw] mb-4">Welcome to CSTR</h1>
                     <p class="text-sm sm:text-base mb-6">Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore
-                        impedit natus illum modi
-                        commodi maxime iure placeat consequuntur, blanditiis consequatur. Lorem ipsum dolor, sit amet
-                        consectetur adipisicing elit. Aut, quos!</p>
-                    <button
+                        impedit natus illum modi commodi maxime iure placeat consequuntur, blanditiis consequatur. Lorem
+                        ipsum dolor, sit amet consectetur adipisicing elit. Aut, quos!</p>
+                    <a href="./login.html"
                         class="bg-[#23423c] px-4 sm:px-6 rounded-full py-2 sm:py-3 hover:bg-[#153e37] duration-150 hover:px-5 sm:hover:px-8 relative text-sm sm:text-base">Get
-                        Started</button>
+                        Started</a>
                 </div>
             </section>
         </main>
@@ -107,6 +201,7 @@
     <script src="../scripts/main/getEle.js"></script>
     <script src="../scripts/main/events.js"></script>
     <script src="../scripts/main/main.js"></script>
+    <script src="../scripts/toast/toast.js"></script>
 </body>
 
 </html>

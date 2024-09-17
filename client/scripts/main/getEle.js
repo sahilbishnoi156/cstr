@@ -26,10 +26,11 @@ const mainDiv = querySelectorOrThrow('#main_div');
 const privateNav = querySelectorOrThrow('#private_nav');
 const privateSection = querySelectorOrThrow('#private_section');
 const privateButtons = querySelectorAllOrThrow('.private_button');
+const logoutButton = querySelectorOrThrow('#logout_button');
+const currentUserName = querySelectorOrThrow('#current_user_name');
 
 // Get Public elements
 const publicNav = querySelectorOrThrow('#public_nav');
 const publicSection = querySelectorOrThrow('#public_section');
-const publicButtons = querySelectorAllOrThrow('.public_button');
 const contentArea = querySelectorOrThrow('#content-area');
 const sidebarButtons = querySelectorAllOrThrow('.sidebar-btn');

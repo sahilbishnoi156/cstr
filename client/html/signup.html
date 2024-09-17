@@ -17,7 +17,7 @@
         class="absolute -right-64 -top-24 w-96 h-96 bg-[#23423c] rounded-full filter blur-3xl opacity-20"></div>
     <div id="background_blurry_design_2"
         class="absolute -left-56 -bottom-32 w-96 h-96 bg-[#23423c] rounded-full filter blur-3xl opacity-20"></div>
-
+    <div id="toast"></div>
     <div class="w-full max-w-md z-10">
         <div class="bg-[#23423c] bg-opacity-20 backdrop-blur-lg rounded-lg px-8 py-10 shadow-lg">
             <div class="text-2xl flex items-center justify-center gap-2 text-white mb-8">
@@ -30,10 +30,11 @@
                         Full Name
                     </label>
                     <div class="mt-1">
-                        <input id="fullName" name="fullName" type="text" required
+                        <input id="fullName" name="name" type="text" required
                             class="bg-[#23423c] appearance-none rounded-full relative block w-full px-4 py-2 border border-gray-600 placeholder-gray-500 text-white focus:outline-none focus:ring-[#087452] focus:border-[#087452] focus:z-10 sm:text-sm"
                             placeholder="John Doe">
                     </div>
+                    <div class="text-red-400 text-sm ml-3 mt-0.5" id="name_error"></div>
                 </div>
                 <div>
                     <label for="email" class="block text-sm font-medium text-gray-300">
@@ -44,30 +45,32 @@
                             class="bg-[#23423c] appearance-none rounded-full relative block w-full px-4 py-2 border border-gray-600 placeholder-gray-500 text-white focus:outline-none focus:ring-[#087452] focus:border-[#087452] focus:z-10 sm:text-sm"
                             placeholder="you@example.com">
                     </div>
+                    <div class="text-red-400 text-sm ml-3  mt-0.5" id="email_error"></div>
                 </div>
                 <div>
                     <label for="password" class="block text-sm font-medium text-gray-300">
                         Password
                     </label>
                     <div class="mt-1">
-                        <input id="password" name="password" type="password" autocomplete="new-password" required
+                        <input id="password" name="password" type="password" autocomplete="password" required
                             class="bg-[#23423c] appearance-none rounded-full relative block w-full px-4 py-2 border border-gray-600 placeholder-gray-500 text-white focus:outline-none focus:ring-[#087452] focus:border-[#087452] focus:z-10 sm:text-sm"
-                            placeholder="••••••••">
+                            placeholder="••••••••" min="8" minlength="8">
                     </div>
+                    <div class="text-red-400 text-sm ml-3  mt-0.5" id="password_error"></div>
                 </div>
                 <div>
                     <label for="confirmPassword" class="block text-sm font-medium text-gray-300">
                         Confirm Password
                     </label>
                     <div class="mt-1">
-                        <input id="confirmPassword" name="confirmPassword" type="password" autocomplete="new-password"
+                        <input id="confirmPassword" name="confirmPassword" type="password" autocomplete="password"
                             required
                             class="bg-[#23423c] appearance-none rounded-full relative block w-full px-4 py-2 border border-gray-600 placeholder-gray-500 text-white focus:outline-none focus:ring-[#087452] focus:border-[#087452] focus:z-10 sm:text-sm"
                             placeholder="••••••••">
                     </div>
                 </div>
                 <div>
-                    <button type="submit"
+                    <button type="submit" id="signup_btn"
                         class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-full text-white bg-[#087452] hover:bg-[#0a9e6e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#087452] transition duration-150 ease-in-out">
                         Sign up
                     </button>
@@ -82,6 +85,7 @@
         </div>
     </div>
     <script src="../scripts/signUp/signUp.js"></script>
+    <script src="../scripts/toast/toast.js"></script>
 </body>
 
 </html>
