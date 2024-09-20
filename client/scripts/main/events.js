@@ -14,241 +14,638 @@ sidebarButtons.forEach((button) => {
         contentArea.scrollTo(0, 0);
     });
 });
+async function deleteCommand(id) {
+    try {
+        const response = await fetch(
+            `http://localhost:3000/api/command/deleteCommand?id=${id}&web=true`,
+            {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    authToken: `${
+                        localStorage.getItem('authtoken') ||
+                        sessionStorage.getItem('authtoken')
+                    }`,
+                },
+            }
+        );
+
+        const result = await response.json();
+        if (result.error) {
+            showToast(result.error, true);
+        } else {
+            showToast('Command Deleted');
+            updateContent('my_commands');
+        }
+    } catch (error) {
+        console.error(error);
+        showToast('An error occurred', true);
+    }
+}
+function displayResults(commands, ele) {
+    ele.innerHTML = `<h2 class="text-xl font-semibold text-white my-4">Results ${
+        commands.length || 0
+    }</h2>`;
+    ele.innerHTML += commands
+        .map(
+            (command) => `
+            <div class="bg-[#23423c] rounded-lg shadow-lg p-6 mb-4">
+                <div class="flex justify-between items-start sm:flex-row flex-col mb-2">
+                    <h3 class="text-xl font-semibold text-white">${
+                        command.label
+                    }</h3>
+                    <span class="text-sm text-yellow-600">${
+                        command.created_at
+                    }</span>
+
+                </div>
+                <p class="text-gray-300 mb-2">${
+                    command.description || 'No description provided'
+                }</p>
+                <div class="flex flex-wrap gap-2 mb-2">
+                    ${command.tags
+                        .map(
+                            (tag) =>
+                                `<span class="bg-[#4a7a6f] text-white px-2 py-1 rounded-md text-sm">${tag}</span>`
+                        )
+                        .join('')}
+                </div>
+                <div class="text-sm text-gray-400">
+                    <p>Execution count: ${command.execution_count}</p>
+                    <p>Last executed: ${
+                        command.last_executed_at
+                            ? new Date(
+                                  command.last_executed_at
+                              ).toLocaleString()
+                            : 'Never'
+                    }</p>
+                    <p>Working directory: ${
+                        command.working_directory || 'Not specified'
+                    }</p>
+                    <p>Source: ${
+                        command.source || 'Not specified'
+                    }</p>
+                    <p>Aliases: ${
+                        command.aliases.join(', ') || 'None'
+                    }</p>
+                </div>
+                <div><svg xmlns="http://www.w3.org/2000/svg" id="${
+                    command.id
+                }" class="text-red-400 h-7 w-7 mt-3 cursor-pointer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6">
+                    <polyline  points="3 6 5 6 21 6"></polyline>
+                    <path  d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                    <path  d="M10 11v6"></path>
+                    <path  d="M14 11v6"></path>
+                    <rect   x="9" y="3" width="6" height="3" rx="1" ry="1"></rect>
+                    </svg>
+                </div>
+            </div>
+        `
+        )
+        .join('');
+    commands.forEach((command) => {
+        document
+            .getElementById(command.id)
+            .addEventListener('click', (e) => {
+                const isSure = confirm(
+                    'Do you really want to delete this command?'
+                );
+                if (isSure) {
+                    deleteCommand(command.id);
+                } else {
+                    showToast('Delete Cancelled', true);
+                }
+            });
+    });
+}
+
+function toggleButton(isDisabled, ele, text) {
+    if (isDisabled) {
+        ele.setAttribute('disabled', true);
+        ele.innerHTML = `
+        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        Loading...`;
+    } else {
+        ele.removeAttribute('disabled');
+        ele.textContent = text;
+    }
+}
 
 function updateContent(content) {
     switch (content) {
         case 'home':
-            contentArea.innerHTML = `<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <!-- Hero Section -->
-                        <section id="hero"
-                            class="relative min-h-[80vh] flex flex-col justify-center items-center py-12 sm:py-16 snap-start">
-                            <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-center">Manage Commands
-                                Easily with cstr</h1>
-                            <p class="text-base sm:text-lg md:text-xl mb-8 text-center max-w-2xl">
-                                A tool for saving, organizing, and accessing commands via both a web interface and CLI.
-                                Seamlessly manage your frequently used commands, retrieve history, and more!
-                            </p>
-                            <a href="#"
-                                class="bg-[#23423c] cursor-pointer text-white px-5 hover:px-7 duration-150 py-3 rounded-md text-lg font-semibold">
-                                Add Command
-                            </a>
-                            <a href="#about" class=" absolute bottom-4 animate-bounce">
-                                <svg class="w-6 h-6 text-white" fill="none" stroke-linecap="round"
-                                    stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-                                </svg>
-                            </a>
-                        </section>
-
-                        <!-- What the Project is About -->
-                        <section id="about"
-                            class="relative min-h-[80vh] flex flex-col justify-center items-center py-12 sm:py-16 snap-start">
-                            <h2 class="text-2xl sm:text-3xl md:text-4xl font-semibold mb-6 text-center">What is CSTR?
-                            </h2>
-                            <p class="text-base sm:text-lg md:text-xl leading-relaxed text-center max-w-2xl">
-                                The <strong>cstr</strong> project provides a versatile platform for saving and managing
-                                shell commands, whether you're working locally on the CLI or prefer the convenience
-                                of a web interface. With <strong>cstr</strong>, you can easily store commands, add
-                                aliases, retrieve command histories, and more, all from one tool.
-                            </p>
-                            <a href="#use-cases" class="absolute bottom-4 animate-bounce">
-                                <svg class="w-6 h-6 text-white" fill="none" stroke-linecap="round"
-                                    stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-                                </svg>
-                            </a>
-                        </section>
-
-                        <!-- Use Cases Section -->
-                        <section id="use-cases"
-                            class="relative min-h-[85vh] flex flex-col justify-center items-center py-12 sm:py-16 snap-start">
-                            <h2 class="text-2xl sm:text-3xl md:text-4xl font-semibold mb-6 text-center">Use Cases</h2>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-4xl">
-                                <div class="p-6 bg-[#23423c] rounded-md">
-                                    <h3 class="text-lg sm:text-xl md:text-2xl font-semibold mb-4">Streamline
-                                        Development</h3>
-                                    <p class="text-sm sm:text-base">
-                                        Use <strong>cstr</strong> to manage commands that you frequently run during
-                                        development. Quickly add new commands, retrieve them later, and avoid repetitive
-                                        typing.
-                                    </p>
-                                </div>
-
-                                <div class="p-6 bg-[#23423c] rounded-md">
-                                    <h3 class="text-lg sm:text-xl md:text-2xl font-semibold mb-4">Team Collaboration
-                                    </h3>
-                                    <p class="text-sm sm:text-base">
-                                        Share important commands with your team. Store commands in a central repository
-                                        and allow others to access them, making it easier for team members to run common
-                                        scripts.
-                                    </p>
-                                </div>
-
-                                <div class="p-6 bg-[#23423c] rounded-md">
-                                    <h3 class="text-lg sm:text-xl md:text-2xl font-semibold mb-4">Project Setup
-                                        Automation</h3>
-                                    <p class="text-sm sm:text-base">
-                                        Save commands for setting up projects, such as installing dependencies or
-                                        setting up environments. You can easily push the setup commands to the CLI and
-                                        website for seamless access.
-                                    </p>
-                                </div>
-
-                                <div class="p-6 bg-[#23423c] rounded-md">
-                                    <h3 class="text-lg sm:text-xl md:text-2xl font-semibold mb-4">Data Retrieval</h3>
-                                    <p class="text-sm sm:text-base">
-                                        Retrieve old command histories across projects. <strong>cstr</strong> helps you
-                                        keep track of useful commands and reuse them across different environments.
-                                    </p>
-                                </div>
-                            </div>
-                            <a href="#hero" class="absolute bottom-4 animate-bounce">
-                                <svg class="w-6 h-6 text-white" fill="none" stroke-linecap="round"
-                                    stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
-                                </svg>
-                            </a>
-                        </section>
-                    </div>
-`;
+            contentArea.innerHTML = d_html.home;
             break;
         case 'cli':
-            contentArea.innerHTML = `<div class="mx-auto">
-                        <h1 class="text-6xl font-bold mb-6">CSTR - CLI</h1>
-                        <div  class="text-red-500 mb-6"><h2 class="text-4xl">***IMPORTANT***</h2>
-                        <p>This tool is only built for linux environment at least for now. So it is strongly recommended
-                            do not use this in windows or mac or you might loose you system files.</p></div>
-                        <div class="mb-8">
-                            <h2 class="text-4xl font-semibold mb-4">Usage</h2>
-                            <p class="mb-3">Below are some common use cases:</p>
-                            <ul class="list-disc pl-8">
-                                <li class="mb-4"><strong class="p-1 rounded-md bg-[#23423c]">cstr add</strong>: Add a
-                                    new
-                                    command</li>
-                                <li class="mb-4"><strong class="p-1 rounded-md bg-[#23423c]">cstr add
-                                        &lt;limit&gt;</strong>:
-                                    Add history
-                                    commands (with a limit of
-                                    10)</li>
-                                <li class="mb-4"><strong class="p-1 rounded-md bg-[#23423c]">cstr man</strong>: View
-                                    manual
-                                </li>
-                                <li class="mb-4"><strong class="p-1 rounded-md bg-[#23423c]">cstr login</strong>: Log in
-                                    to the
-                                    service to
-                                    access global files</li>
-                                <li class="mb-4"><strong class="p-1 rounded-md bg-[#23423c]">cstr get</strong>: Search
-                                    commands
-                                    using
-                                    specific attributes</li>
-                                <li class="mb-4"><strong class="p-1 rounded-md bg-[#23423c]">cstr fetch</strong>: Fetch
-                                    data
-                                    from the cloud
-                                    service</li>
-                                <li class="mb-4"><strong class="p-1 rounded-md bg-[#23423c]">cstr push</strong>: Push
-                                    local
-                                    changes to the
-                                    cloud</li>
-                            </ul>
-                        </div>
-
-                        <div class="mb-8">
-                            <h2 class="text-4xl font-semibold mb-4">Installation</h2>
-                            <p class="text-2xl">Run Locally:</p>
-                            <ol class="list-decimal pl-8">
-                                <li class="my-3">Clone the repository:
-                                    <br>
-                                    <code
-                                        class="p-1 rounded-md bg-[#23423c]">$ git clone "https://github.com/sahilbishnoi156/cstr"</code>
-                                </li>
-                                <li class="my-3">Start backend server:
-                                    <ol class="list-decimal pl-8">
-                                        <li class="mb-4">Navigate to server directory: <br> <code
-                                                class="p-1 rounded-md bg-[#23423c]">$ cd cstr/server</code></li>
-                                        <li class="mb-4">Install dependencies: <br> <code
-                                                class="p-1 rounded-md bg-[#23423c]">$ npm i</code></li>
-                                        <li class="mb-4">Setup environment variables: <br> <code
-                                                class="p-1 rounded-md bg-[#23423c]">$ vim cstr/server/.env</code></li>
-                                        <li class="mb-4">Start the server: <br> <code
-                                                class="p-1 rounded-md bg-[#23423c]">$ npm run start</code></li>
-                                    </ol>
-                                </li>
-                                <li class="my-3">Navigate to C project directory: <br> <code
-                                        class="p-1 rounded-md bg-[#23423c]">$ cd cstr/cli</code></li>
-                                <li class="my-3">Build using script:
-                                    <ol class="list-decimal pl-8">
-                                        <li class="mb-4">Run build script: <br> <code
-                                                class="p-1 rounded-md bg-[#23423c]">$ ./scripts/build-library.sh</code>
-                                        </li>
-                                        <li class="mb-4">Run the executable file: <br> <code
-                                                class="p-1 rounded-md bg-[#23423c]">$ ./bin/cstr &lt;action&gt;</code>
-                                        </li>
-                                    </ol>
-                                </li>
-                                <li class="my-3">Compile using script:
-                                    <ol class="list-decimal pl-8">
-                                        <li class="mb-4">Run compile script: <br> <code
-                                                class="p-1 rounded-md bg-[#23423c]">$ ./scripts/compile.sh</code></li>
-                                        <li class="mb-4">Run the executable file: <br> <code
-                                                class="p-1 rounded-md bg-[#23423c]">$ ./bin/cstr &lt;action&gt;</code>
-                                        </li>
-                                    </ol>
-                                </li>
-                                <li class="my-3">Compile manually:
-                                    <ol class="list-decimal pl-8">
-                                        <li class="mb-4">Compile all .c files : <br>
-                                            <code
-                                                class="p-1 rounded-md bg-[#23423c]">$ gcc -Iinclude -Wall -o bin/cstr/  src/main.c src/commands.c src/auth.c src/utils.c src/fetch_push.c src/get.c -lcurl -ljson-c -lncurses</code>
-                                        </li>
-                                        <li class="mb-4">Compile with library (First run build-library.sh script to make library) : <br>
-                                            <code
-                                                class="p-1 rounded-md bg-[#23423c]">$ gcc -Iinclude -o bin/cstr src/main.c -L. lib/cstrlibrary.a -lncurses -ljson-c -lcurl</code>
-                                        </li>
-                                    </ol>
-                                </li>
-                            </ol>
-                            <p class="text-2xl">Download CLI script:</p>
-                            <div class="mt-2 "><a download href="https://firebasestorage.googleapis.com/v0/b/dropbox-clone-2de2b.appspot.com/o/users%2Fuser_2ciZaSDYBHaCi49X89L0Gr2MX1i%2Ffiles%2F5LZ5FcD4HuUSYu1TMdho?alt=media&token=a991d80a-173e-426c-bd06-3b71e7eb3af3"
-                                    class="bg-[#23423c] hover:bg-green-800 duration-150 cursor-pointer text-white px-4 hover:px-6 py-2 rounded-md text-md font-semibold">
-                                    Download CLI
-                                </a></div>
-
-                        </div>
-
-                        <div class="mb-8">
-                            <h2 class="text-4xl font-semibold mb-4">Troubleshooting</h2>
-                            <p class="">If you encounter issues, try the following steps:</p>
-                            <ul class="list-disc pl-8">
-                                <li>Ensure the CLI is installed correctly and executable.</li>
-                                <li>Check your internet connection for fetching or pushing data.</li>
-                                <li>Consult the <strong>./bin/cstr man</strong> for detailed command usage.</li>
-                            </ul>
-                        </div>
-
-                        <div class="mb-8">
-                            <h2 class="text-4xl font-semibold mb-4">Development</h2>
-                            <p class="">To develop and contribute to this project, make sure you have the following
-                                tools installed:</p>
-                            <ul class="list-disc pl-8">
-                                <li>Linux</li>
-                                <li>GCC compiler</li>
-                                <li><code>json-c</code> library for JSON parsing</li>
-                                <li><code>libcurl</code> library for making HTTP requests</li>
-                                <li><code>ncurses</code> library to move the cursor, create windows, produce colors,
-                                    play with mouse etc
-                                </li>
-                                <li><code>nodejs</code> only if you are running it locally</li>
-                            </ul>
-                        </div>
-`;
+            contentArea.innerHTML = d_html.cli;
             break;
         case 'search':
-            contentArea.innerHTML =
-                '<h2 class="text-2xl mb-4">Search</h2><p>Search for items here.</p>';
+            contentArea.innerHTML = d_html.search;
+            const searchButton =
+                document.getElementById('search-button');
+            const searchField =
+                document.getElementById('search-field');
+            const searchValue =
+                document.getElementById('search-value');
+            const searchResults =
+                document.getElementById('search-results');
+
+            searchButton.addEventListener('click', async () => {
+                const key = searchField.value;
+                const value = searchValue.value;
+
+                if (!value) {
+                    showToast('Please enter a search term', true);
+                    return;
+                }
+
+                searchResults.innerHTML = `<div class="h-[40vh] w-full flex items-center justify-center flex-col"><svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>Loading</div>`;
+                try {
+                    const response = await fetch(
+                        'http://localhost:3000/api/command/getbyfield?web=true',
+                        {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                authToken: `${
+                                    localStorage.getItem(
+                                        'authtoken'
+                                    ) ||
+                                    sessionStorage.getItem(
+                                        'authtoken'
+                                    )
+                                }`,
+                            },
+                            body: JSON.stringify({ key, value }),
+                        }
+                    );
+
+                    const result = await response.json();
+
+                    if (result.error || !result.data) {
+                        showToast(
+                            result.error || 'No results found',
+                            true
+                        );
+                        searchResults.innerHTML = '';
+                    } else {
+                        displayResults(result.data, searchResults);
+                    }
+                } catch (error) {
+                    showToast(
+                        'An error occurred while searching',
+                        true
+                    );
+                }
+            });
+
+            break;
+
+        case 'add':
+            contentArea.innerHTML = d_html.add;
+            const form = document.getElementById('commandForm');
+            const tagInput = document.getElementById('tagInput');
+            const aliasInput = document.getElementById('aliasInput');
+            const tagContainer =
+                document.getElementById('tagContainer');
+            const aliasContainer =
+                document.getElementById('aliasContainer');
+
+            function addItem(value, container, inputElement) {
+                if (value.trim() !== '') {
+                    const span = document.createElement('span');
+                    span.className =
+                        'bg-[#23423c] px-2 py-1 rounded-md text-sm flex items-center';
+                    span.innerHTML = `
+          ${value}
+          <button type="button" class="ml-2 text-xs">
+            <i class="fas fa-times"></i>
+          </button>
+        `;
+                    span.querySelector('button').addEventListener(
+                        'click',
+                        function () {
+                            container.removeChild(span);
+                        }
+                    );
+                    container.appendChild(span);
+                    inputElement.value = '';
+                }
+            }
+
+            tagInput.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addItem(this.value, tagContainer, this);
+                }
+            });
+
+            aliasInput.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addItem(this.value, aliasContainer, this);
+                }
+            });
+            let isCreatingCommand = false;
+            const create_btn = document.getElementById(
+                'create_command_btn'
+            );
+
+            form.addEventListener('submit', async function (e) {
+                e.preventDefault();
+                if (isCreatingCommand) return;
+                isCreatingCommand = true;
+                toggleButton(true, create_btn, 'Create');
+
+                const formData = new FormData(form);
+                const tags = Array.from(tagContainer.children).map(
+                    (span) => span.textContent.trim()
+                );
+                const aliases = Array.from(
+                    aliasContainer.children
+                ).map((span) => span.textContent.trim());
+
+                const commandData = {
+                    label: formData.get('label'),
+                    description: formData.get('description'),
+                    tags: tags,
+                    execution_count: 0,
+                    command_output: formData.get('commandOutput'),
+                    exit_status: 0,
+                    source: formData.get('source'),
+                    aliases: aliases,
+                };
+                console.log(commandData);
+
+                try {
+                    const response = await fetch(
+                        'http://localhost:3000/api/command/createCommand?web=true',
+                        {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                authToken:
+                                    localStorage.getItem(
+                                        'authtoken'
+                                    ) ||
+                                    sessionStorage.getItem(
+                                        'authtoken'
+                                    ) ||
+                                    '',
+                            },
+                            body: JSON.stringify({
+                                command: commandData,
+                            }),
+                        }
+                    );
+
+                    if (!response.ok) {
+                        throw new Error('Failed to create command');
+                    }
+
+                    const result = await response.json();
+                    if (result.error || !result.data) {
+                        throw new Error(result.error);
+                    }
+                    showToast('Command Created');
+                } catch (error) {
+                    console.error(
+                        error.message || 'Error creating command',
+                        error
+                    );
+                    showToast('Action Failed', true);
+                } finally {
+                    isCreatingCommand = false;
+                    toggleButton(false, create_btn, 'Create');
+                }
+            });
             break;
         case 'settings':
-            contentArea.innerHTML =
-                '<h2 class="text-2xl mb-4">Settings</h2><p>Adjust your settings here.</p>';
+            contentArea.innerHTML = d_html.settings;
+            const syncToggle = document.getElementById('syncToggle');
+            let isSyncing = false;
+
+            async function checkSyncStatus() {
+                try {
+                    const response = await fetch(
+                        'http://localhost:3000/api/auth/sync?status=true',
+                        {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                authToken:
+                                    localStorage.getItem(
+                                        'authtoken'
+                                    ) ||
+                                    sessionStorage.getItem(
+                                        'authtoken'
+                                    ) ||
+                                    '',
+                            },
+                        }
+                    );
+
+                    if (!response.ok) {
+                        throw new Error(
+                            'Failed to fetch sync status'
+                        );
+                    }
+
+                    const result = await response.json();
+                    syncToggle.checked = result.sync;
+                } catch (error) {
+                    console.error(
+                        error.message ||
+                            'Error checking sync status:',
+                        error
+                    );
+                    showToast('Action Failed', true);
+                }
+            }
+
+            async function handleSyncToggle() {
+                if (isSyncing) return;
+
+                isSyncing = true;
+                syncToggle.disabled = true;
+
+                try {
+                    const response = await fetch(
+                        'http://localhost:3000/api/auth/sync',
+                        {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                authToken:
+                                    localStorage.getItem(
+                                        'authtoken'
+                                    ) ||
+                                    sessionStorage.getItem(
+                                        'authtoken'
+                                    ) ||
+                                    '',
+                            },
+                            body: JSON.stringify({
+                                enableSync: syncToggle.checked,
+                            }),
+                        }
+                    );
+
+                    if (!response.ok) {
+                        throw new Error(
+                            'Failed to update sync settings'
+                        );
+                    }
+
+                    const result = await response.json();
+                    if (result.error) {
+                        throw new Error(result.error);
+                    }
+                    showToast('Settings Updated');
+                } catch (error) {
+                    console.error(
+                        error.message ||
+                            'Error updating sync settings:',
+                        error
+                    );
+                    showToast('Action Failed', true);
+                    syncToggle.checked = !syncToggle.checked; // Revert the toggle state
+                } finally {
+                    isSyncing = false;
+                    syncToggle.disabled = false;
+                }
+            }
+
+            let isResetting = false;
+            const resetPasswordBtn = document.getElementById(
+                'resetPasswordBtn'
+            );
+            const resetPasswordForm = document.getElementById(
+                'resetPasswordForm'
+            );
+
+            async function resetPassword(e) {
+                e.preventDefault(); // Prevent form submission
+                if (isResetting) return;
+                isResetting = true;
+                toggleButton(true, resetPasswordBtn, 'Reset');
+
+                // make form
+                const formData = new FormData(resetPasswordForm);
+
+                // Define API endpoint
+                const apiUrl =
+                    'http://localhost:3000/api/auth/resetPass';
+
+                // Define request options
+                const requestOptions = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        authToken:
+                            localStorage.getItem('authtoken') ||
+                            sessionStorage.getItem('authtoken') ||
+                            '',
+                    },
+                    body: JSON.stringify({
+                        oldpassword: formData.get('oldpassword'),
+                        newpassword: formData.get('newpassword'),
+                    }),
+                };
+
+                // Make API call
+                fetch(apiUrl, requestOptions)
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.data) {
+                            showToast(data.data || 'Password reset');
+                            resetPasswordForm.reset();
+                        } else {
+                            showToast(
+                                data.error ||
+                                    'Error resetting password: ',
+                                true
+                            );
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                        showToast(
+                            error.message ||
+                                'Error resetting password: ',
+                            true
+                        );
+                    })
+                    .finally(() => {
+                        isResetting = false;
+                        toggleButton(
+                            false,
+                            resetPasswordBtn,
+                            'Reset'
+                        );
+                    });
+            }
+
+            resetPasswordForm.addEventListener(
+                'submit',
+                resetPassword
+            );
+
+            // Username update
+            const changeUsernameForm =
+                document.getElementById('changenameform');
+            const changeusernameButton =
+                document.getElementById('changenamebtn');
+            const usernameInput = document.getElementById('fullname');
+            let isUpdatingUsername = false;
+            changeUsernameForm.addEventListener(
+                'submit',
+                async function (e) {
+                    e.preventDefault();
+                    if (isUpdatingUsername) return;
+                    isUpdatingUsername = true;
+                    toggleButton(
+                        true,
+                        changeusernameButton,
+                        'Update'
+                    );
+
+                    const formData = new FormData(changeUsernameForm);
+                    const apiUrl =
+                        'http://localhost:3000/api/auth/changename';
+                    const requestOptions = {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            authToken:
+                                localStorage.getItem('authtoken') ||
+                                sessionStorage.getItem('authtoken') ||
+                                '',
+                        },
+                        body: JSON.stringify({
+                            name: formData.get('name'),
+                        }),
+                    };
+
+                    fetch(apiUrl, requestOptions)
+                        .then((response) => response.json())
+                        .then((data) => {
+                            if (data.data) {
+                                showToast(
+                                    data.data || 'Name updated'
+                                );
+                                usernameInput.value =
+                                    formData.get('name');
+
+                                // update session storage
+                                const parsedUser = JSON.parse(
+                                    sessionStorage.getItem('user')
+                                );
+                                parsedUser.name =
+                                    formData.get('name');
+                                sessionStorage.setItem(
+                                    'user',
+                                    JSON.stringify(parsedUser)
+                                );
+
+                                // update navbar
+                                currentUserName.textContent =
+                                    'Hi ' +
+                                    formData.get('name') +
+                                    '!';
+                            } else {
+                                showToast(
+                                    data.error ||
+                                        'Error updating name: ',
+                                    true
+                                );
+                            }
+                        })
+                        .catch((error) => {
+                            console.error('Error:', error);
+                            showToast(
+                                error.message ||
+                                    'Error updating name: ',
+                                true
+                            );
+                        })
+                        .finally(() => {
+                            isUpdatingUsername = false;
+                            toggleButton(
+                                false,
+                                changeusernameButton,
+                                'Update'
+                            );
+                        });
+                }
+            );
+
+            // set username to field
+            const parsedUser = JSON.parse(
+                sessionStorage.getItem('user')
+            );
+            usernameInput.value = parsedUser.name;
+            checkSyncStatus();
+
+            // Add event listener for toggle changes
+            syncToggle.addEventListener('change', handleSyncToggle);
+            break;
+        case 'my_commands':
+            contentArea.innerHTML = d_html.my_commands;
+            document.getElementById(
+                'my_command_result'
+            ).innerHTML = `<div class="h-[60vh] w-full flex items-center justify-center flex-col"><svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>Loading</div>`;
+            async function fetchCommands() {
+                try {
+                    const response = await fetch(
+                        'http://localhost:3000/api/command/getcommands?web=true',
+                        {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                authToken: `${
+                                    localStorage.getItem(
+                                        'authtoken'
+                                    ) ||
+                                    sessionStorage.getItem(
+                                        'authtoken'
+                                    )
+                                }`,
+                            },
+                        }
+                    );
+
+                    const result = await response.json();
+
+                    if (result.error || !result.data) {
+                        showToast(
+                            result.error || 'No Commands found'
+                        );
+                    } else {
+                        displayResults(
+                            result.data,
+                            document.getElementById(
+                                'my_command_result'
+                            )
+                        );
+                    }
+                } catch (error) {
+                    console.log(error);
+                    showToast(
+                        error.message || 'Failed to fetch commands'
+                    );
+                }
+            }
+            fetchCommands();
             break;
         default:
             contentArea.innerHTML =

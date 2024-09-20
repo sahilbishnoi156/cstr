@@ -30,6 +30,7 @@ async function checkAuthToken() {
             const url = 'http://localhost:3000/api/auth/authenticate';
             const response = await fetch(url + `?token=${authToken}`);
             const data = await response.json();
+            console.log(data);
 
             if (!data || data.error) {
                 console.error(data.error || 'Invalid token');
@@ -54,7 +55,10 @@ async function checkAuthToken() {
             }
         } catch (error) {
             console.error('Error during authentication:', error);
-            localStorage.setItem('error', 'Authentication error');
+            localStorage.setItem(
+                'error',
+                error.message || 'Authentication failed'
+            );
             window.location.href = './error.html';
         }
     } else if (user) {

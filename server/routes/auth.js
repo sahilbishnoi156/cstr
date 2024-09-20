@@ -142,6 +142,81 @@ router.get('/getuser', fetchuser, async (req, res) => {
     }
 });
 
+router.post('/changename', fetchuser, async (req, res) => {
+    const { name } = req.body;
+    if (!name) {
+        return res.status(400).json({
+            error: 'Name cannot be empty',
+        });
+    }
+    try {
+        // Find the user by email
+        const user = await User.findById(req.body.creator);
+        user.name = name;
+        await user.save();
+        res.json({
+            data: 'Changed Successfully',
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            error: error.message || 'Internal Server Error',
+        });
+    }
+});
+router.post('/resetPass', fetchuser, async (req, res) => {
+    const { oldpassword, newpassword } = req.body;
+    try {
+        // Find the user by email
+        const user = await User.findById(req.body.creator);
+        if (user) {
+            const passwordCompare = await bcrypt.compare(
+                oldpassword,
+                user.password
+            );
+            if (!passwordCompare) {
+                return res.status(400).json({
+                    error: 'Invalid Old Password',
+                });
+            }
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(
+                newpassword,
+                salt
+            );
+            user.password = hashedPassword;
+            await user.save();
+        }
+        res.json({
+            data: 'Reset Successfully',
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            error: error.message || 'Internal Server Error',
+        });
+    }
+});
+
+router.post('/sync', fetchuser, async (req, res) => {
+    const { creator, enableSync } = req.body;
+    try {
+        if (req.query.status) {
+            const user = await User.findById(creator);
+            res.status(200).json({ sync: user.sync });
+            return;
+        }
+        const user = await User.findById(creator);
+        user.sync = enableSync;
+        await user.save();
+        res.json({ data: 'Change Applied' });
+    } catch (error) {
+        res.status(500).json({
+            error: error.message || 'Internal Server Error',
+        });
+    }
+});
+
 router.get('/authenticate', async (req, res) => {
     const token = req.query.token;
 
