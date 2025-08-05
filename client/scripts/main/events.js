@@ -17,7 +17,7 @@ sidebarButtons.forEach((button) => {
 async function deleteCommand(id) {
     try {
         const response = await fetch(
-            `http://localhost:3000/api/command/deleteCommand?id=${id}&web=true`,
+            `${BACKEND_URI}/command/deleteCommand?id=${id}&web=true`,
             {
                 method: 'DELETE',
                 headers: {
@@ -168,7 +168,7 @@ function updateContent(content) {
         </svg>Loading</div>`;
                 try {
                     const response = await fetch(
-                        'http://localhost:3000/api/command/getbyfield?web=true',
+                        `${BACKEND_URI}/command/getbyfield?web=true`,
                         {
                             method: 'POST',
                             headers: {
@@ -285,7 +285,7 @@ function updateContent(content) {
 
                 try {
                     const response = await fetch(
-                        'http://localhost:3000/api/command/createCommand?web=true',
+                        `${BACKEND_URI}/command/createCommand?web=true`,
                         {
                             method: 'POST',
                             headers: {
@@ -334,7 +334,7 @@ function updateContent(content) {
             async function checkSyncStatus() {
                 try {
                     const response = await fetch(
-                        'http://localhost:3000/api/auth/sync?status=true',
+                        `${BACKEND_URI}/auth/sync?status=true`,
                         {
                             method: 'POST',
                             headers: {
@@ -377,7 +377,7 @@ function updateContent(content) {
 
                 try {
                     const response = await fetch(
-                        'http://localhost:3000/api/auth/sync',
+                        `${BACKEND_URI}/auth/sync`,
                         {
                             method: 'POST',
                             headers: {
@@ -441,7 +441,7 @@ function updateContent(content) {
 
                 // Define API endpoint
                 const apiUrl =
-                    'http://localhost:3000/api/auth/resetPass';
+                    `${BACKEND_URI}/auth/resetPass`;
 
                 // Define request options
                 const requestOptions = {
@@ -518,7 +518,7 @@ function updateContent(content) {
 
                     const formData = new FormData(changeUsernameForm);
                     const apiUrl =
-                        'http://localhost:3000/api/auth/changename';
+                        `${BACKEND_URI}/auth/changename`;
                     const requestOptions = {
                         method: 'POST',
                         headers: {
@@ -607,7 +607,7 @@ function updateContent(content) {
             async function fetchCommands() {
                 try {
                     const response = await fetch(
-                        'http://localhost:3000/api/command/getcommands?web=true',
+                        `${BACKEND_URI}/command/getcommands?web=true`,
                         {
                             method: 'GET',
                             headers: {

@@ -1,3 +1,4 @@
+
 // Helper functions to get elements with error handling
 
 function querySelectorOrThrow(selector) {
@@ -38,7 +39,7 @@ signUpForm.addEventListener('submit', function (e) {
 
 // Function to handle signup
 function handleSignup(formData) {
-    const url = 'http://localhost:3000/api/auth/createuser';
+    const url = BACKEND_URI + '/auth/createuser';
 
     fetch(url, {
         method: 'POST',

@@ -1,5 +1,4 @@
 // Helper functions to get elements with error handling
-
 function querySelectorOrThrow(selector) {
     const element = document.querySelector(selector);
     if (!element) {
@@ -31,7 +30,7 @@ loginForm.addEventListener('submit', function (e) {
 
 // Function to handle signup (optional)
 function handleLogin(formData) {
-    const url = 'http://localhost:3000' + '/api/auth/login';
+    const url = BACKEND_URI + '/auth/login';
     // Example: Send formData to an API endpoint
     fetch(url, {
         method: 'POST',

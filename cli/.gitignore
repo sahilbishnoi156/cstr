@@ -1,2 +1,4 @@
 setup.sh
 ./bin/cstr
+
+.env

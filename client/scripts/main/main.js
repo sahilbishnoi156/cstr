@@ -27,7 +27,7 @@ async function checkAuthToken() {
     if (authToken && !user) {
         try {
             // Verify token by making an API call
-            const url = 'http://localhost:3000/api/auth/authenticate';
+            const url = BACKEND_URI + '/auth/authenticate';
             const response = await fetch(url + `?token=${authToken}`);
             const data = await response.json();
             console.log(data);

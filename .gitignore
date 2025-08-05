@@ -1,3 +1,4 @@
 .vscode
 ./cli/setup.sh
 ./cli/bin/cstr
+./cli/.env

@@ -1,0 +1,1 @@
+const BACKEND_URI = "https://cstr.onrender.com/api"
