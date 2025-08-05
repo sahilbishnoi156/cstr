@@ -52,7 +52,7 @@ function handleLogin(formData) {
                 }
                 showToast('Login successful', false);
                 setTimeout(function () {
-                    window.location.href = '/html';
+                    window.location.href = '/';
                 }, 1000);
             } else if (data.errors && Array.isArray(data.errors)) {
                 displayFieldErrors(data.errors);
@@ -101,7 +101,7 @@ function checkAuthToken() {
         localStorage.getItem('authtoken') ||
         sessionStorage.getItem('authtoken');
     if (authToken) {
-        window.location.href = '/html';
+        window.location.href = '/';
     }
 }
 

@@ -102,7 +102,7 @@ function checkAuthToken() {
         localStorage.getItem('authtoken') ||
         sessionStorage.getItem('authtoken');
     if (authToken) {
-        window.location.href = '/html';
+        window.location.href = '/';
     }
 }
 

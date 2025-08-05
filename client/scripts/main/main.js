@@ -30,7 +30,6 @@ async function checkAuthToken() {
             const url = BACKEND_URI + '/auth/authenticate';
             const response = await fetch(url + `?token=${authToken}`);
             const data = await response.json();
-            console.log(data);
 
             if (!data || data.error) {
                 console.error(data.error || 'Invalid token');
